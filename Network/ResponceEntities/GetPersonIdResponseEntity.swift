@@ -8,5 +8,5 @@
 import Foundation
 
 struct GetPersonIdResponseEntity: Decodable {
-    let userId:String
+    let userId:Int
 }

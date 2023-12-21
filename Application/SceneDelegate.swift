@@ -14,11 +14,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         let window = UIWindow(windowScene: windowScene)
-
+        UserDefaults.standard.setValue(true, forKey: "isLogged")
         if UserDefaults.standard.bool(forKey: "isLogged") {
-            window.rootViewController = MainTabBarController()
+            let nc = UINavigationController(rootViewController: MainTabBarController())
+            nc.isNavigationBarHidden = true
+            window.rootViewController = nc
         } else {
-            window.rootViewController = UINavigationController(rootViewController: WelcomeViewController())
+            let nc = UINavigationController(rootViewController: WelcomeViewController())
+            nc.isNavigationBarHidden = true
+            window.rootViewController = nc
         }
 
         window.makeKeyAndVisible()

@@ -8,6 +8,6 @@
 import Foundation
 
 struct ConfirmPhoneNumberRequestResponseEntity: Decodable {
-    let isRegistred: Bool
+    let isRegistred: Bool?
     let isCodeValid: Bool
 }

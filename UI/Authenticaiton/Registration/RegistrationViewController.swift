@@ -283,7 +283,7 @@ private extension RegistrationViewController {
                             self.animateUsernameError()
                         } else {
                             UserDefaults.standard.setValue(response.userId, forKey: "userId")
-                            UserDefaults.standard.setValue(true, forKey: "isRegistered")
+                            UserDefaults.standard.setValue(true, forKey: "isLogged")
                             UserDefaults.standard.removeObject(forKey: "userPhoneNum")
                             
                             self.navigationController?.setViewControllers([MainTabBarController()], animated: true)
