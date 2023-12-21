@@ -13,6 +13,7 @@ final class MainTabBar: UITabBar {
 
     private enum UIConstants {
         static let plusButtonSizeMultiplier: CGFloat = 0.7
+        static let plusButtonSize:CGFloat = 55
     }
 
     // MARK: - Private properties
@@ -58,7 +59,8 @@ private extension MainTabBar {
         plusButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalTo(self.snp.top)
-            make.size.equalTo(self.snp.height).multipliedBy(UIConstants.plusButtonSizeMultiplier)
+            make.size.equalTo(UIConstants.plusButtonSize)
+            //make.size.equalTo(self.snp.height).multipliedBy(UIConstants.plusButtonSizeMultiplier)
         }
     }
 

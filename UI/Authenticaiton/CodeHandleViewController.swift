@@ -70,10 +70,10 @@ private extension CodeHandleViewController {
             if let entity = responseEntity {
                 print(entity)
                 if entity.isCodeValid {
-                    if entity.isRegistred {
+                    if entity.isRegistred! {
                         
                         self.getUserId()
-                        
+                        UserDefaults.standard.setValue(true, forKey: "isLogged")
                         self.navigationController?.setViewControllers([MainTabBarController()], animated: true)
                     } else {
                         self.navigationController?.setViewControllers([RegistrationViewController()], animated: true)

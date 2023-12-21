@@ -5,46 +5,169 @@
 //  Created by Timur Gazizulin on 14.12.23.
 //
 
-import Alamofire
 import UIKit
+import SnapKit
 
 final class ProfileViewController: UIViewController {
 
-
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
-
-        view.addSubview(label)
-
-        label.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
+        navigationController?.isNavigationBarHidden = true
+        
+        initialization()
         makeRequest()
+        
     }
 
-    let label: UILabel = {
-        let label = UILabel()
-
-        label.textAlignment = .center
-        label.textColor = .black
-        label.numberOfLines = 4
-        label.font = .systemFont(ofSize: 15)
-
-        return label
+    
+    // MARK: - Private constatnts
+    
+    private enum UIConstants {
+        static let cellWidth:CGFloat = 370
+        static let cellHeight:CGFloat = 100
+    }
+    
+    lazy private var tableViewCells:[ProfileTableViewCellType] = [
+        .username,
+        .multiCell([.multiCellSubcell("Любимые", "heart.fill", "openLikedPlaces"),
+                    .multiCellSubcell("Уведомления", "bell.badge.fill", "openNotificationsPage")]),
+        .multiCell([.multiCellSubcell("Настройки профиля", "person.fill", "openProfileSettingsPage"),
+                    .multiCellSubcell("Общие настройки", "gearshape.fill", "openSettingsPage")]),
+        .multiCell([.multiCellSubcell("Обратная связь", "repeat.circle.fill", "openFeedback"),
+                    .multiCellSubcell("Выйти", "door.left.hand.closed", "logout")]),
+        .smallLabel("placeby.com 2024. Все права защищены.")
+    ]
+    
+    
+    // MARK: - Prviate properties
+    
+    private var user = User(phoneNum: "", name: "", birthday: "", sex: "")
+    
+    lazy private var mainTableView:ProfileTableView = {
+        let tableView = ProfileTableView()
+        
+        tableView.isHidden = true
+        
+        tableView.backgroundColor = .white
+        tableView.dataSource = self
+        return tableView
     }()
+    
+    private let indicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
 
+        indicator.startAnimating()
+
+        indicator.color = .black
+
+        return indicator
+    }()
+    
+    
+    
+}
+
+
+// MARK: - Private methods
+private extension ProfileViewController {
+    
+    func initialization(){
+        
+        configureNotifications()
+        
+        view.backgroundColor = .white
+        
+        view.addSubview(indicator)
+        
+        indicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        view.addSubview(mainTableView)
+        
+        mainTableView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.top.equalTo(view.snp.topMargin)
+            make.width.bottom.equalToSuperview()
+        }
+        
+        
+    }
+    
     func makeRequest() {
         let userId = UserDefaults.standard.integer(forKey: "userId")
         UserNetworkManager.makeGetPersonRequest(id: userId) { responseEntity in
             if let response = responseEntity {
-                self.label.text = "Здравствуйте, \(response.name)!"
+                
+                self.user = User(phoneNum:  response.phoneNumber,
+                                 name: response.name,
+                                 birthday: response.dateOfBirth,
+                                 sex: response.gender)
+                self.endLoading()
             } else{
                 print("ошибка makeGetPersonRequest")
-                
-                let user = User(phoneNum: "333496508", name: "Егор", birthday: "2007-09-12", sex: "male")
+                self.user = User(phoneNum: "333496508", name: "Егор", birthday: "2007-09-12", sex: "male")
+                self.endLoading()
             }
         }
     }
+    
+    func configureNotifications(){
+        
+    }
+    
+    func endLoading(){
+        indicator.isHidden = true
+        mainTableView.isHidden = false
+        
+        fillTableView()
+    }
+    
+    func fillTableView(){
+        mainTableView.reloadData()
+    }
+    
+    @objc func logoutButtonPressed(){
+        NotificationCenter.default.post(Notification(name: Notification.Name("logout")))
+    }
+
+}
+
+extension ProfileViewController:UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tableViewCells.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellType = tableViewCells[indexPath.row]
+
+        switch cellType {
+        case .username:
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: UsernameProfileCell.self)) as! UsernameProfileCell
+            cell.configure(username: user.name, sex: user.sex)
+            
+            return cell
+        case .multiCell(let cells):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ProfileMultiCell.self)) as! ProfileMultiCell
+            
+            cell.configure(with: cells)
+            
+            return cell
+        case .smallLabel(let text):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SmallLabelCell.self)) as! SmallLabelCell
+            
+            cell.configure(with: text)
+            
+            return cell
+        default:
+            print(cellType)
+        }
+        return UITableViewCell()
+    }
+    
+    
+    
 }
