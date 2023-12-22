@@ -71,13 +71,12 @@ private extension CodeHandleViewController {
                 print(entity)
                 if entity.isCodeValid {
                     if entity.isRegistred! {
-                        
                         self.getUserId()
                         UserDefaults.standard.setValue(true, forKey: "isLogged")
                         self.navigationController?.setViewControllers([MainTabBarController()], animated: true)
                     } else {
                         self.navigationController?.setViewControllers([RegistrationViewController()], animated: true)
-                }
+                    }
 
                 } else {
                     self.navigationController?.setViewControllers([ValidatePhoneNumViewController()], animated: true)
@@ -87,13 +86,13 @@ private extension CodeHandleViewController {
             }
         }
     }
-    
-    func getUserId(){
+
+    func getUserId() {
         UserNetworkManager.makeUserIdByPhoneNumRequest(phoneNum: UserDefaults.standard.string(forKey: "userPhoneNum")!) { responseEntity in
             if let response = responseEntity {
                 UserDefaults.standard.setValue(response.userId, forKey: "userId")
                 UserDefaults.standard.removeObject(forKey: "userPhoneNum")
-            } else{
+            } else {
                 print("Ошибка makeUserIdByPhoneNumRequest")
             }
         }

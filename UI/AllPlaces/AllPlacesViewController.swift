@@ -47,6 +47,7 @@ final class AllPlacesViewController: UIViewController {
 private extension AllPlacesViewController {
     func initialization() {
         navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationBar.barTintColor = .white
         view.backgroundColor = .white
 
         setupNotifications()
