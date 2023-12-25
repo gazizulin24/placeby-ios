@@ -13,13 +13,13 @@ final class MainTabBar: UITabBar {
 
     private enum UIConstants {
         static let plusButtonSizeMultiplier: CGFloat = 0.7
-        static let plusButtonSize:CGFloat = 55
+        static let plusButtonSize: CGFloat = 55
     }
 
     // MARK: - Private properties
 
     private lazy var plusButton: UIButton = {
-        let button = PlusButton()
+        let button = FindButton()
         button.layer.cornerRadius = self.bounds.height * UIConstants.plusButtonSizeMultiplier
 
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
@@ -60,7 +60,7 @@ private extension MainTabBar {
             make.centerX.equalToSuperview()
             make.centerY.equalTo(self.snp.top)
             make.size.equalTo(UIConstants.plusButtonSize)
-            //make.size.equalTo(self.snp.height).multipliedBy(UIConstants.plusButtonSizeMultiplier)
+            // make.size.equalTo(self.snp.height).multipliedBy(UIConstants.plusButtonSizeMultiplier)
         }
     }
 

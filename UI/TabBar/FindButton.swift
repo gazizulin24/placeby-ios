@@ -1,5 +1,5 @@
 //
-//  PlusButton.swift
+//  FindButton.swift
 //  placeby
 //
 //  Created by Timur Gazizulin on 12.12.23.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PlusButton: UIButton {
+final class FindButton: UIButton {
     // MARK: - Initialization
 
     override init(frame: CGRect) {
@@ -32,7 +32,7 @@ final class PlusButton: UIButton {
 
 // MARK: - Private methods
 
-private extension PlusButton {
+private extension FindButton {
     func initialization() {
         setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
         tintColor = UIColor(cgColor: CGColor(red: 54 / 255, green: 54 / 255, blue: 54 / 255, alpha: 1))

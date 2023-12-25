@@ -5,7 +5,6 @@
 //  Created by Timur Gazizulin on 20.12.23.
 //
 
-
 enum ProfileTableViewCellType {
     case username
     case buttonCell(String, String)
@@ -15,4 +14,3 @@ enum ProfileTableViewCellType {
 }
 
 typealias ProfileTableViewCellTypeMultiCell = [ProfileTableViewCellType]
-

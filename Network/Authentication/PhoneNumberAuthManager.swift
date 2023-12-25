@@ -9,8 +9,8 @@ import Alamofire
 
 enum PhoneNumberAuthManager {
     private enum Endpoints {
-        static let sendPhoneNumberEndpoint: String =  GlobalNetworkConstants.host + "/authenticate/login"
-        static let confirmPhoneNumberEndpoint: String = GlobalNetworkConstants.host +  "/authenticate/login/confirmation"
+        static let sendPhoneNumberEndpoint: String = GlobalNetworkConstants.host + "/authenticate/login"
+        static let confirmPhoneNumberEndpoint: String = GlobalNetworkConstants.host + "/authenticate/login/confirmation"
     }
 
     static func makeSendPhoneNumberRequest(phoneNum: String, completion: @escaping (SendPhoneNumberResponseEntity?) -> Void) {

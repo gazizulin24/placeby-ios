@@ -8,6 +8,12 @@
 import UIKit
 
 final class TitleCell: UITableViewCell {
+    // MARK: - Public
+    
+    func configure(with title:String){
+        titleLabel.text = title
+    }
+    
     // MARK: - Initialization
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

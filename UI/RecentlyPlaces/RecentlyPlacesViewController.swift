@@ -12,6 +12,8 @@ final class RecentlyPlacesViewController: UIViewController {
         super.viewDidLoad()
 
         navigationItem.title = "Недавние"
+        navigationController?.navigationBar.tintColor = .black
         navigationController?.navigationBar.prefersLargeTitles = true
+        view.backgroundColor = .white
     }
 }

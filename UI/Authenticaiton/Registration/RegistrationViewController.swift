@@ -285,7 +285,7 @@ private extension RegistrationViewController {
                             UserDefaults.standard.setValue(response.userId, forKey: "userId")
                             UserDefaults.standard.setValue(true, forKey: "isLogged")
                             UserDefaults.standard.removeObject(forKey: "userPhoneNum")
-                            
+
                             self.navigationController?.setViewControllers([MainTabBarController()], animated: true)
                         }
                     } else {
