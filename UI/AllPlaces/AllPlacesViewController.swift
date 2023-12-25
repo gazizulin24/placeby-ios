@@ -23,8 +23,12 @@ final class AllPlacesViewController: UIViewController {
     private let data: [AllPlacesTableViewCellType] = {
         var data = [AllPlacesTableViewCellType]()
 
-        data.append(.title)
-
+        data.append(.placeTypes)
+        
+        data.append(.title("Все"))
+        
+        data.append(.recomendations)
+        
         for place in Place.basicPlaces {
             data.append(.place(place))
         }
@@ -83,9 +87,9 @@ extension AllPlacesViewController: UITableViewDataSource {
         let index = indexPath.row
 
         switch data[index] {
-        case .title:
+        case .title(let title):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: TitleCell.self), for: indexPath) as! TitleCell
-
+            cell.configure(with: title)
             return cell
         case let .place(place):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceCell.self), for: indexPath) as! PlaceCell
@@ -93,8 +97,21 @@ extension AllPlacesViewController: UITableViewDataSource {
             cell.configure(with: place)
 
             cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlace(_:))))
+            return cell
+        case .recomendations:
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecomendationsCell.self), for: indexPath) as! RecomendationsCell
+
+            cell.configure()
 
             return cell
+        case .placeTypes:
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceTypesCell.self), for: indexPath) as! PlaceTypesCell
+
+            //cell.configure(with: place)
+
+            //cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlace(_:))))
+            return cell
+            
         }
     }
 

@@ -30,6 +30,7 @@ struct Place: Equatable {
         places.append(Place(name: "Парк Горького", description: "Парк культуры и отдыха в центре Минска недалеко от Площади Победы.", distantion: "1км", images: ["park", "park2", "park3"], coordinates: PlaceCoordinates(latitude: 53.903133, longitude: 27.573285)))
 
         places.append(Place(name: "Dana Mall", description: "Самый большой торговый центр для всей семьи.", distantion: "6.9км", images: ["dana"], coordinates: PlaceCoordinates(latitude: 53.933853, longitude: 27.652223)))
+        
 
         return places
     }()
