@@ -99,18 +99,19 @@ extension AllPlacesViewController: UITableViewDataSource {
             cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlace(_:))))
             return cell
         case .recomendations:
-            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecomendationsCell.self), for: indexPath) as! RecomendationsCell
+            //let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecomendationsCell.self), for: indexPath) as! RecomendationsCell
+            print("recomendations")
+            //cell.configure()
 
-            cell.configure()
-
-            return cell
+            //return cell
+            return UITableViewCell()
         case .placeTypes:
-            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceTypesCell.self), for: indexPath) as! PlaceTypesCell
-
+            //let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceTypesCell.self), for: indexPath) as! PlaceTypesCell
+            print("place types")
             //cell.configure(with: place)
 
             //cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlace(_:))))
-            return cell
+            return UITableViewCell()
             
         }
     }
