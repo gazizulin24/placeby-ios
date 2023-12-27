@@ -20,15 +20,15 @@ final class AllPlacesViewController: UIViewController {
 
     // MARK: - Private constants
 
-    private let data: [AllPlacesTableViewCellType] = {
+    private var data: [AllPlacesTableViewCellType] = {
         var data = [AllPlacesTableViewCellType]()
 
         data.append(.placeTypes)
-        
+
+        data.append(.recomendations)
         data.append(.title("Все"))
         
-        data.append(.recomendations)
-        
+        data.append(.loading)
         for place in Place.basicPlaces {
             data.append(.place(place))
         }
@@ -41,6 +41,7 @@ final class AllPlacesViewController: UIViewController {
     private lazy var tableView: AllPlacesTableView = {
         let tableView = AllPlacesTableView()
         tableView.dataSource = self
+        tableView.delegate = self
 
         return tableView
     }()
@@ -65,6 +66,13 @@ private extension AllPlacesViewController {
 
     func setupNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(findPlace), name: Notification.Name("findPlace"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(filterPlaces), name: Notification.Name("allPlacesFilterTypeChanged"), object: nil)
+    }
+    
+    @objc func filterPlaces(){
+        if let placeType = PlaceType.getPlaceTypeFromUserDefaults(){
+            filterTableView(with:placeType)
+        }
     }
 
     @objc func findPlace() {
@@ -74,6 +82,17 @@ private extension AllPlacesViewController {
 
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    func filterTableView(with placeType:PlaceType){
+        data = []
+        data.append(.placeTypes)
+        if placeType.dbTitle == "all"{
+            data.append(.recomendations)
+        }
+        data.append(.title(placeType.title))
+        data.append(.loading)
+        tableView.reloadData()
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -82,12 +101,14 @@ extension AllPlacesViewController: UITableViewDataSource {
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         return data.count
     }
+    
+    
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let index = indexPath.row
 
         switch data[index] {
-        case .title(let title):
+        case let .title(title):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: TitleCell.self), for: indexPath) as! TitleCell
             cell.configure(with: title)
             return cell
@@ -99,20 +120,18 @@ extension AllPlacesViewController: UITableViewDataSource {
             cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlace(_:))))
             return cell
         case .recomendations:
-            //let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecomendationsCell.self), for: indexPath) as! RecomendationsCell
-            print("recomendations")
-            //cell.configure()
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecomendationsCell.self), for: indexPath) as! RecomendationsCell
+            cell.configure()
 
-            //return cell
-            return UITableViewCell()
+            return cell
         case .placeTypes:
-            //let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceTypesCell.self), for: indexPath) as! PlaceTypesCell
-            print("place types")
-            //cell.configure(with: place)
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceTypesCell.self), for: indexPath) as! PlaceTypesCell
 
-            //cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlace(_:))))
-            return UITableViewCell()
-            
+            return cell
+        case .loading:
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: LoadingCell.self), for: indexPath) as! LoadingCell
+
+            return cell
         }
     }
 
@@ -123,6 +142,21 @@ extension AllPlacesViewController: UITableViewDataSource {
             placeVC.configure(with: view.place)
 
             navigationController?.pushViewController(placeVC, animated: true)
+        }
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension AllPlacesViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.alpha = 0
+        
+        if let cell = cell as? PlaceTypesCell {
+            cell.alpha = 1
+        } else{
+            UIView.animate(withDuration: 0.3) {
+                cell.alpha = 1
+            }
         }
     }
 }

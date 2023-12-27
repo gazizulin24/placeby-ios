@@ -15,6 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let window = UIWindow(windowScene: windowScene)
         UserDefaults.standard.setValue(true, forKey: "isLogged")
+        UserDefaults.standard.setValue(1, forKey: "userId")
         if UserDefaults.standard.bool(forKey: "isLogged") {
             let nc = UINavigationController(rootViewController: MainTabBarController())
             nc.isNavigationBarHidden = true

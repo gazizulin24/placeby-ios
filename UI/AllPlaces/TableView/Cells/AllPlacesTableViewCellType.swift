@@ -12,4 +12,5 @@ enum AllPlacesTableViewCellType {
     case place(Place)
     case placeTypes
     case recomendations
+    case loading
 }

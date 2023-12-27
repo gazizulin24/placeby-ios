@@ -5,8 +5,8 @@
 //  Created by Timur Gazizulin on 12.12.23.
 //
 
-import UIKit
 import CoreLocation
+import UIKit
 
 final class MainTabBarController: UITabBarController {
     // MARK: - Private properties
@@ -22,26 +22,23 @@ final class MainTabBarController: UITabBarController {
         initialize()
         getUserLocation()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
+        super.viewWillAppear(animated)
 
-            startUpdatingLocation()
-        }
+        startUpdatingLocation()
+    }
 
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
 
-            stopUpdatingLocation()
-        }
+        stopUpdatingLocation()
+    }
 }
 
-
-
 // MARK: - Private methods
+
 private extension MainTabBarController {
-    
-    
     func initialize() {
         setValue(mainTabBar, forKey: "tabBar")
 
@@ -83,52 +80,50 @@ private extension MainTabBarController {
 
         return [allPlacesViewController, placesMapViewController, spacerViewController, recentlyPlacesViewController, profileViewController]
     }
-    
-    
 }
 
 // MARK: - CLLocationManagerDelegate
 
-extension MainTabBarController:CLLocationManagerDelegate {
-    
-    func getUserLocation(){
+extension MainTabBarController: CLLocationManagerDelegate {
+    func getUserLocation() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
     }
-    
+
     func startUpdatingLocation() {
-            if CLLocationManager.locationServicesEnabled() {
-                locationManager.startUpdatingLocation()
-            }
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation()
         }
+    }
 
     func stopUpdatingLocation() {
-            locationManager.stopUpdatingLocation()
+        locationManager.stopUpdatingLocation()
     }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-            guard let location = locations.last else {
-                return
-            }
 
-            let latitude = location.coordinate.latitude
-            let longitude = location.coordinate.longitude
-
-            // Делайте что-то с полученными координатами
-            print("Широта: \(latitude), Долгота: \(longitude)")
-            UserDefaults.standard.setValue(latitude, forKey: "userLatitude")
-            UserDefaults.standard.setValue(longitude, forKey: "userLongitude")
-            NotificationCenter.default.post(name: Notification.Name("userLocationUpdated"), object: nil)
+    func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else {
+            return
         }
 
-        func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-            // Обработка ошибки получения координат
-            print("Ошибка получения координат: \(error.localizedDescription)")
-        }
+        let latitude = location.coordinate.latitude
+        let longitude = location.coordinate.longitude
+
+        // Делайте что-то с полученными координатами
+        print("Широта: \(latitude), Долгота: \(longitude)")
+        UserDefaults.standard.setValue(latitude, forKey: "userLatitude")
+        UserDefaults.standard.setValue(longitude, forKey: "userLongitude")
+        NotificationCenter.default.post(name: Notification.Name("userLocationUpdated"), object: nil)
+    }
+
+    func locationManager(_: CLLocationManager, didFailWithError error: Error) {
+        // Обработка ошибки получения координат
+        print("Ошибка получения координат: \(error.localizedDescription)")
+    }
 }
 
 // MARK: - Notifications
+
 private extension MainTabBarController {
     func setupNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(findPlaceButtonPressed), name: Notification.Name("findPlaceButtonPressed"), object: nil)

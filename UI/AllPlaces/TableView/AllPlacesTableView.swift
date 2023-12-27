@@ -29,7 +29,8 @@ private extension AllPlacesTableView {
         backgroundColor = .white
         register(PlaceCell.self, forCellReuseIdentifier: String(describing: PlaceCell.self))
         register(TitleCell.self, forCellReuseIdentifier: String(describing: TitleCell.self))
-        //register(PlaceTypesCell.self, forCellReuseIdentifier: String(describing: PlaceTypesCell.self))
-        //register(RecomendationsCell.self, forCellReuseIdentifier: String(describing: RecomendationsCell.self))
+        register(PlaceTypesCell.self, forCellReuseIdentifier: String(describing: PlaceTypesCell.self))
+        register(LoadingCell.self, forCellReuseIdentifier: String(describing: LoadingCell.self))
+        register(RecomendationsCell.self, forCellReuseIdentifier: String(describing: RecomendationsCell.self))
     }
 }
