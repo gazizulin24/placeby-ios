@@ -8,6 +8,13 @@
 import UIKit
 
 class LoadingCell: UITableViewCell {
+    // MARK: - Public
+    
+    func reloadIndicator(){
+        indicator.startAnimating()
+    }
+    
+    
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -23,8 +30,6 @@ class LoadingCell: UITableViewCell {
     private let indicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
 
-        indicator.startAnimating()
-
         indicator.color = .black
 
         return indicator
@@ -39,6 +44,7 @@ private extension LoadingCell {
         contentView.backgroundColor = .white
         
         indicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()}
+            make.center.equalToSuperview()
+        }
     }
 }

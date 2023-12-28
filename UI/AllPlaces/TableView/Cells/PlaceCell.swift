@@ -14,7 +14,11 @@ final class PlaceCell: UITableViewCell {
     func configure(with place: Place) {
         placeImage.image = UIImage(named: place.images.first!)
         titleLabel.text = place.name
-
+        self.place = place
+    }
+    func configureWithPhotoUrl(place:Place, photoUrl:String) {
+        titleLabel.text = place.name
+        setImageByUrl(url: photoUrl)
         self.place = place
     }
 
@@ -53,10 +57,6 @@ final class PlaceCell: UITableViewCell {
     private let contentCardView: UIView = {
         let view = UIView()
 
-//        view.layer.borderColor = CGColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
-//        view.layer.borderWidth = 1
-//        view.layer.cornerRadius = UIConstants.contentCardViewCornerRadius
-
         return view
     }()
 
@@ -65,7 +65,8 @@ final class PlaceCell: UITableViewCell {
 
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-
+        imageView.backgroundColor = .lightGray
+        
         imageView.layer.cornerRadius = UIConstants.contentCardViewCornerRadius
         return imageView
     }()
@@ -125,6 +126,17 @@ private extension PlaceCell {
             make.top.equalTo(placeImage.snp.bottom)
             make.height.equalTo(UIConstants.titleLabelHeight)
             make.bottom.equalToSuperview()
+        }
+    }
+    
+    
+    func setImageByUrl(url:String){
+        PhotosNetworkManager.loadPhoto(url: url) { [self]responseData in
+            if let data = responseData {
+                placeImage.image = UIImage(data: data)
+            } else{
+                print("не удалось загрузить фото")
+            }
         }
     }
 }

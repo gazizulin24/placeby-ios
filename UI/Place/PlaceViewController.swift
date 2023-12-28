@@ -22,6 +22,18 @@ final class PlaceViewController: UIViewController {
 
         focusOnPlace(coordinates: place.coordinates)
     }
+    
+    func configureWithImageUrl(place:Place, imageUrl:String) {
+        print(place)
+        self.place = place
+
+        setImageByUrl(url:imageUrl)
+        placeLabel.text = place.name
+        placeDescriptionLabel.text = place.description
+        distantionLabel.text = "\(place.distantion) от Вас"
+
+        focusOnPlace(coordinates: place.coordinates)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +85,7 @@ final class PlaceViewController: UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
+        imageView.backgroundColor = .lightGray
 
         return imageView
     }()
@@ -188,7 +201,8 @@ private extension PlaceViewController {
     }
 
     @objc func tapToPlaceMapView() {
-        UserDefaults.standard.set(Place.basicPlaces.firstIndex(of: place), forKey: "placeIndex")
+        UserDefaults.standard.setValue(place.coordinates.latitude, forKey: "placeToOpenLatitude")
+        UserDefaults.standard.setValue(place.coordinates.longitude, forKey: "placeToOpenLongitude")
         NotificationCenter.default.post(Notification(name: Notification.Name("openPlaceOnMap")))
     }
 
@@ -203,5 +217,16 @@ private extension PlaceViewController {
             animation: YMKAnimation(type: YMKAnimationType.smooth, duration: 1),
             cameraCallback: nil
         )
+    }
+    
+    func setImageByUrl(url:String){
+        PhotosNetworkManager.loadPhoto(url: url) { [self] responseData in
+            if let data = responseData {
+                placeImageView.image = UIImage(data: data)
+                print("drew a photo: ", placeImageView.image)
+            } else{
+                print("не удалось загрузить фото")
+            }
+        }
     }
 }

@@ -10,10 +10,25 @@ import UIKit
 import YandexMapsMobile
 
 final class PlacesMapViewController: UIViewController {
+    
+    // MARK: - Public
     func focusOnPlace(_ place: Place) {
         self.place = place
         // addPlacemark(mapView.mapWindow.map, place)
         focusOn(coordinates: place.coordinates)
+    }
+    
+    func focusOn(coordinates coord: PlaceCoordinates) {
+        mapView.mapWindow.map.move(
+            with: YMKCameraPosition(
+                target: YMKPoint(latitude: coord.latitude, longitude: coord.longitude),
+                zoom: 17,
+                azimuth: 0,
+                tilt: 0
+            ),
+            animation: YMKAnimation(type: YMKAnimationType.smooth, duration: 1),
+            cameraCallback: nil
+        )
     }
 
     // MARK: - Livecycle
@@ -33,7 +48,7 @@ final class PlacesMapViewController: UIViewController {
     private enum UIConstants {
         static let meButtonSize:CGFloat = 50
         static let meButtonLeadingOffset:CGFloat = 20
-        static let meButtonTopInset:CGFloat = 60
+        static let meButtonBottomInset:CGFloat = 30
     }
 
     // MARK: - Private properties
@@ -89,7 +104,7 @@ private extension PlacesMapViewController {
         
         meButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(UIConstants.meButtonLeadingOffset)
-            make.top.equalToSuperview().inset(UIConstants.meButtonTopInset)
+            make.bottom.equalToSuperview().inset(UIConstants.meButtonBottomInset)
             make.size.equalTo(UIConstants.meButtonSize)
         }
 
@@ -108,18 +123,7 @@ private extension PlacesMapViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(updateUserLocation), name: Notification.Name("userLocationUpdated"), object: nil)
     }
 
-    func focusOn(coordinates coord: PlaceCoordinates) {
-        mapView.mapWindow.map.move(
-            with: YMKCameraPosition(
-                target: YMKPoint(latitude: coord.latitude, longitude: coord.longitude),
-                zoom: 17,
-                azimuth: 0,
-                tilt: 0
-            ),
-            animation: YMKAnimation(type: YMKAnimationType.smooth, duration: 1),
-            cameraCallback: nil
-        )
-    }
+    
 
     func updateUserPlacemark(lat: Double, long: Double) {
         print("пересоздал юзер плейсмарк")
@@ -182,8 +186,8 @@ private extension PlacesMapViewController {
         print(place)
         let image = UIImage(named: "placemark_icon") ?? UIImage(systemName: "person")!
         let placemark = map.mapObjects.addPlacemark()
-        placemark.geometry = YMKPoint(latitude: place.coordinates.longitude,
-                                      longitude: place.coordinates.latitude)
+        placemark.geometry = YMKPoint(latitude: place.coordinates.latitude,
+                                      longitude: place.coordinates.longitude)
 
         placemark.setTextWithText(
             place.name,

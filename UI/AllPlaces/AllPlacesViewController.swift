@@ -29,9 +29,7 @@ final class AllPlacesViewController: UIViewController {
         data.append(.title("Все"))
         
         data.append(.loading)
-        for place in Place.basicPlaces {
-            data.append(.place(place))
-        }
+        
 
         return data
     }()
@@ -62,6 +60,8 @@ private extension AllPlacesViewController {
         tableView.snp.makeConstraints { make in
             make.size.equalToSuperview()
         }
+        UserDefaults.standard.setValue("all", forKey: "allPlacesFilterDBTitle")
+        addPlacesToDataByFilter(by:UserDefaults.standard.string(forKey: "allPlacesFilterDBTitle") ?? "all")
     }
 
     func setupNotifications() {
@@ -92,6 +92,34 @@ private extension AllPlacesViewController {
         data.append(.title(placeType.title))
         data.append(.loading)
         tableView.reloadData()
+        addPlacesToDataByFilter(by: UserDefaults.standard.string(forKey: "allPlacesFilterDBTitle") ?? "all")
+    }
+    
+    func addPlacesToDataByFilter(by filter:String) {
+        
+        if filter == "all"{
+            PlacesNetworkManager.getAllPlacesRequest() { [self] responseEntity in
+                data.removeLast()
+                if let responseEntity = responseEntity {
+                    for placeResponse in responseEntity {
+                        let place = Place(name: placeResponse.nameOfPlace, description: placeResponse.description, distantion: placeResponse.photos.first!.photoURL, images: [], coordinates: PlaceCoordinates(latitude: placeResponse.latitude, longitude: placeResponse.longitude))
+                        data.append(.place(place))
+                    }
+                } else {
+                    for place in Place.basicPlaces {
+                        data.append(.place(place))
+                    }
+                }
+                tableView.reloadData()
+            }
+        } 
+//        else {
+//            data.removeLast()
+//            for place in Place.basicPlaces {
+//                data.append(.place(place))
+//            }
+//            tableView.reloadData()
+//        }
     }
 }
 
@@ -107,7 +135,7 @@ extension AllPlacesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let index = indexPath.row
 
-        switch data[index] {
+        switch data[index]{
         case let .title(title):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: TitleCell.self), for: indexPath) as! TitleCell
             cell.configure(with: title)
@@ -115,7 +143,12 @@ extension AllPlacesViewController: UITableViewDataSource {
         case let .place(place):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceCell.self), for: indexPath) as! PlaceCell
 
-            cell.configure(with: place)
+            if place.images.isEmpty{
+                print(place.distantion)
+                cell.configureWithPhotoUrl(place: place, photoUrl: place.distantion)
+            } else{
+                cell.configure(with: place)
+            }
 
             cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlace(_:))))
             return cell
@@ -130,7 +163,8 @@ extension AllPlacesViewController: UITableViewDataSource {
             return cell
         case .loading:
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: LoadingCell.self), for: indexPath) as! LoadingCell
-
+            
+            cell.reloadIndicator()
             return cell
         }
     }
@@ -138,8 +172,17 @@ extension AllPlacesViewController: UITableViewDataSource {
     @objc func tapToPlace(_ sender: UITapGestureRecognizer) {
         if let view = sender.view as? PlaceCell {
             let placeVC = PlaceViewController()
-
-            placeVC.configure(with: view.place)
+            
+            let place = view.place
+             
+            print("place: ", place.images.isEmpty)
+            
+            if place.images.isEmpty {
+                placeVC.configureWithImageUrl(place: place, imageUrl: place.distantion)
+            } else{
+                placeVC.configure(with: view.place)
+            }
+                
 
             navigationController?.pushViewController(placeVC, animated: true)
         }

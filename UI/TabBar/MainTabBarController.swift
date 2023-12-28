@@ -205,8 +205,10 @@ private extension MainTabBarController {
 
         if let nc = viewControllers![1] as? UINavigationController {
             if let vc = nc.viewControllers.first! as? PlacesMapViewController {
-                let placeIndex = UserDefaults.standard.integer(forKey: "placeIndex")
-                vc.focusOnPlace(Place.basicPlaces[placeIndex])
+                let placeLatitude = UserDefaults.standard.double(forKey: "placeToOpenLatitude")
+                let placeLongitude = UserDefaults.standard.double(forKey: "placeToOpenLongitude")
+                vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
+                
             }
         }
     }

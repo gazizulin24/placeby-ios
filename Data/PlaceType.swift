@@ -22,7 +22,7 @@ struct PlaceType {
                              PlaceType(title: "Знаковые места", dbTitle: "attractions"),
                              PlaceType(title: "Активный отдых", dbTitle: "activeVacation"),
                              PlaceType(title: "Большой компанией", dbTitle: "bigCompany"),
-                             PlaceType(title: "Разные", dbTitle: "other"), ]
+                             PlaceType(title: "Разные", dbTitle: "other")]
     
     static func savePlaceTypeToUserDefaults(placeType:PlaceType){
         UserDefaults.standard.setValue(placeType.title, forKey: "allPlacesFilterTitle")
