@@ -7,7 +7,7 @@
 
 import Alamofire
 
-class UserNetworkManager {
+enum UserNetworkManager {
     private enum Endpoints {
         static let getUserEndpoint: String = GlobalNetworkConstants.host + "/people/"
         static let userIdByPhoneNumEndpoint: String = GlobalNetworkConstants.host + "/people/userId"

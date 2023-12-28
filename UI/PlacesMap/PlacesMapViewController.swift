@@ -10,14 +10,14 @@ import UIKit
 import YandexMapsMobile
 
 final class PlacesMapViewController: UIViewController {
-    
     // MARK: - Public
+
     func focusOnPlace(_ place: Place) {
         self.place = place
         // addPlacemark(mapView.mapWindow.map, place)
         focusOn(coordinates: place.coordinates)
     }
-    
+
     func focusOn(coordinates coord: PlaceCoordinates) {
         mapView.mapWindow.map.move(
             with: YMKCameraPosition(
@@ -41,35 +41,34 @@ final class PlacesMapViewController: UIViewController {
 
     // MARK: - Private constants
 
-    private var place = Place(name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
+    private var place = Place(placeId:0,name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
 
     private let belarusCoordinates = PlaceCoordinates(latitude: 53.902735, longitude: 27.555691)
-    
+
     private enum UIConstants {
-        static let meButtonSize:CGFloat = 50
-        static let meButtonLeadingOffset:CGFloat = 20
-        static let meButtonBottomInset:CGFloat = 30
+        static let meButtonSize: CGFloat = 50
+        static let meButtonLeadingOffset: CGFloat = 20
+        static let meButtonBottomInset: CGFloat = 30
     }
 
     // MARK: - Private properties
 
     private let mapView = YMKMapView()
     private var userPlacemark: YMKPlacemarkMapObject!
-    
-    lazy private var meButton:UIButton = {
+
+    private lazy var meButton: UIButton = {
         let button = UIButton()
-        
-        button.setTitle("Я", for: .normal)
-        
+
+        button.setTitle("Вы", for: .normal)
 
         button.backgroundColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
         button.setTitleColor(UIColor(cgColor: CGColor(red: 54 / 255, green: 54 / 255, blue: 54 / 255, alpha: 1)), for: .normal)
         button.addTarget(self, action: #selector(focusOnUserLocation), for: .touchUpInside)
-        
-        button.layer.cornerRadius = UIConstants.meButtonSize/2
+
+        button.layer.cornerRadius = UIConstants.meButtonSize / 2
         button.layer.borderWidth = 3
         button.layer.borderColor = CGColor(red: 54 / 255, green: 54 / 255, blue: 54 / 255, alpha: 1)
-        
+
         return button
     }()
 }
@@ -99,31 +98,28 @@ private extension PlacesMapViewController {
                 cameraCallback: nil
             )
         }
-        
+
         mapView.addSubview(meButton)
-        
+
         meButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(UIConstants.meButtonLeadingOffset)
             make.bottom.equalToSuperview().inset(UIConstants.meButtonBottomInset)
             make.size.equalTo(UIConstants.meButtonSize)
         }
 
-        createAllPlacesPlacemarks(map:mapView.mapWindow.map)
-        
+        createAllPlacesPlacemarks(map: mapView.mapWindow.map)
     }
-    
-    @objc func focusOnUserLocation(){
+
+    @objc func focusOnUserLocation() {
         let userLat = UserDefaults.standard.double(forKey: "userLatitude")
         let userLong = UserDefaults.standard.double(forKey: "userLongitude")
-        
+
         focusOn(coordinates: PlaceCoordinates(latitude: userLat, longitude: userLong))
     }
 
     func setupNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateUserLocation), name: Notification.Name("userLocationUpdated"), object: nil)
     }
-
-    
 
     func updateUserPlacemark(lat: Double, long: Double) {
         print("пересоздал юзер плейсмарк")
@@ -136,16 +132,15 @@ private extension PlacesMapViewController {
         // Устанавливаем новые координаты для существующего userPlacemark
         userPlacemark.geometry = newCoordinate
     }
-    
-    func createAllPlacesPlacemarks(map:YMKMap){
-        
-        PlacesNetworkManager.getAllPlacesRequest(){ [self] responseEntity in
+
+    func createAllPlacesPlacemarks(map: YMKMap) {
+        PlacesNetworkManager.getAllPlacesRequest { [self] responseEntity in
             if let responseEntity = responseEntity {
-                for placeResponseEntity in responseEntity{
-                    let singlePlace = Place(name: placeResponseEntity.nameOfPlace, description: placeResponseEntity.description, distantion: "", images: [], coordinates: PlaceCoordinates(latitude: placeResponseEntity.latitude, longitude: placeResponseEntity.longitude))
+                for placeResponseEntity in responseEntity {
+                    let singlePlace = Place(placeId:placeResponseEntity.id,name: placeResponseEntity.nameOfPlace, description: placeResponseEntity.description, distantion: "", images: [], coordinates: PlaceCoordinates(latitude: placeResponseEntity.latitude, longitude: placeResponseEntity.longitude))
                     self.addPlacemark(map, singlePlace)
                 }
-            } else{
+            } else {
                 for place in Place.basicPlaces {
                     self.addPlacemark(map, place)
                 }

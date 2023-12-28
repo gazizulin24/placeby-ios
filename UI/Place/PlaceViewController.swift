@@ -22,12 +22,12 @@ final class PlaceViewController: UIViewController {
 
         focusOnPlace(coordinates: place.coordinates)
     }
-    
-    func configureWithImageUrl(place:Place, imageUrl:String) {
+
+    func configureWithImageUrl(place: Place, imageUrl: String) {
         print(place)
         self.place = place
 
-        setImageByUrl(url:imageUrl)
+        setImageByUrl(url: imageUrl)
         placeLabel.text = place.name
         placeDescriptionLabel.text = place.description
         distantionLabel.text = "\(place.distantion) от Вас"
@@ -54,7 +54,7 @@ final class PlaceViewController: UIViewController {
 
     // MARK: - Private properties
 
-    private var place = Place(name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
+    private var place = Place(placeId:0,name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
 
     private let placeMap: YMKMapView = {
         let mapView = YMKMapView()
@@ -218,13 +218,13 @@ private extension PlaceViewController {
             cameraCallback: nil
         )
     }
-    
-    func setImageByUrl(url:String){
+
+    func setImageByUrl(url: String) {
         PhotosNetworkManager.loadPhoto(url: url) { [self] responseData in
             if let data = responseData {
                 placeImageView.image = UIImage(data: data)
                 print("drew a photo: ", placeImageView.image)
-            } else{
+            } else {
                 print("не удалось загрузить фото")
             }
         }

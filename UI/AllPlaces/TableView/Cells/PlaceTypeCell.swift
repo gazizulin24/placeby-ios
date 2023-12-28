@@ -31,7 +31,7 @@ class PlaceTypeCell: UICollectionViewCell {
 
     // MARK: - Private properties
 
-    private var placeType:PlaceType!
+    private var placeType: PlaceType!
 
     private let placeTypeButton: UIButton = {
         let button = UIButton(configuration: .tinted())

@@ -208,7 +208,6 @@ private extension MainTabBarController {
                 let placeLatitude = UserDefaults.standard.double(forKey: "placeToOpenLatitude")
                 let placeLongitude = UserDefaults.standard.double(forKey: "placeToOpenLongitude")
                 vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
-                
             }
         }
     }
@@ -221,5 +220,18 @@ private extension MainTabBarController {
 
     @objc func findPlace() {
         selectedIndex = 0
+        
+        let userId = UserDefaults.standard.integer(forKey: "userId")
+        let placeId = UserDefaults.standard.integer(forKey: "placeId")
+        
+        RecentlyPlacesNetworkManager.makePostAddRecentlyPlaceForPersonWithIdRequest(personId: userId, placeId: placeId)
+        
+//        if let vc = viewControllers?.first as? UINavigationController{
+//            let placeVC = PlaceViewController()
+//            
+//           // placeVC.con
+//
+//            //vc.pushViewController()
+//        }
     }
 }

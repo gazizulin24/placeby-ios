@@ -7,9 +7,8 @@
 
 import Alamofire
 
-class PhotosNetworkManager {
-    
-    static func loadPhoto(url:String, completion: @escaping (Data?) -> ()){
+enum PhotosNetworkManager {
+    static func loadPhoto(url: String, completion: @escaping (Data?) -> Void) {
         if let url = URL(string: url) {
             AF.request(url).responseData { response in
                 if let data = response.data {
