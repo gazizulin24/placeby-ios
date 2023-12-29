@@ -52,9 +52,16 @@ final class PlaceViewController: UIViewController {
         static let labelToMapOffset: CGFloat = 10
     }
 
+    private enum ImageConstants {
+        static let unlikedImage: UIImage? = UIImage(systemName: "heart")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        static let likedImage: UIImage? = UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal)
+    }
+
     // MARK: - Private properties
 
-    private var place = Place(placeId:0,name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
+    private var isLiked = false
+
+    private var place = Place(placeId: 0, name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
 
     private let placeMap: YMKMapView = {
         let mapView = YMKMapView()
@@ -174,6 +181,8 @@ private extension PlaceViewController {
     func getRightBarButtonItems() -> [UIBarButtonItem] {
         var items = [UIBarButtonItem]()
 
+        items.append(UIBarButtonItem(image: ImageConstants.unlikedImage, style: .plain, target: self, action: #selector(likeButtonTapped(_:))))
+
         items.append(UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(shareButtonPressed)))
 
         return items
@@ -191,6 +200,15 @@ private extension PlaceViewController {
         items.append(UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(backButtonPressed)))
 
         return items
+    }
+
+    @objc func likeButtonTapped(_ sender: UIBarButtonItem) {
+        isLiked.toggle()
+        if isLiked {
+            sender.image = ImageConstants.likedImage
+        } else {
+            sender.image = ImageConstants.unlikedImage
+        }
     }
 
     @objc func backButtonPressed() {
@@ -223,7 +241,7 @@ private extension PlaceViewController {
         PhotosNetworkManager.loadPhoto(url: url) { [self] responseData in
             if let data = responseData {
                 placeImageView.image = UIImage(data: data)
-                print("drew a photo: ", placeImageView.image)
+                print("drew a photo: ", placeImageView.image ?? "nil")
             } else {
                 print("не удалось загрузить фото")
             }

@@ -8,6 +8,6 @@
 import Foundation
 
 struct RecentlyPlaceData {
-    let name:String
-    let imageUrl:String
+    let name: String
+    let imageUrl: String
 }

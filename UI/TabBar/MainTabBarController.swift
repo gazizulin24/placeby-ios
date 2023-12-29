@@ -19,6 +19,8 @@ final class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+
+        delegate = self
         initialize()
         getUserLocation()
     }
@@ -220,18 +222,28 @@ private extension MainTabBarController {
 
     @objc func findPlace() {
         selectedIndex = 0
-        
+
         let userId = UserDefaults.standard.integer(forKey: "userId")
         let placeId = UserDefaults.standard.integer(forKey: "placeId")
-        
+
         RecentlyPlacesNetworkManager.makePostAddRecentlyPlaceForPersonWithIdRequest(personId: userId, placeId: placeId)
-        
+
 //        if let vc = viewControllers?.first as? UINavigationController{
 //            let placeVC = PlaceViewController()
-//            
+//
 //           // placeVC.con
 //
 //            //vc.pushViewController()
 //        }
+    }
+}
+
+// MARK: - UITabBarControllerDelegate
+
+extension MainTabBarController: UITabBarControllerDelegate {
+    func tabBarController(_: UITabBarController, didSelect viewController: UIViewController) {
+        if let viewController = viewController as? UINavigationController {
+            viewController.navigationBar.isHidden = true
+        }
     }
 }

@@ -31,6 +31,7 @@ private extension AllPlacesTableView {
         register(TitleCell.self, forCellReuseIdentifier: String(describing: TitleCell.self))
         register(PlaceTypesCell.self, forCellReuseIdentifier: String(describing: PlaceTypesCell.self))
         register(LoadingCell.self, forCellReuseIdentifier: String(describing: LoadingCell.self))
+        register(SmallTitleCell.self, forCellReuseIdentifier: String(describing: SmallTitleCell.self))
         register(RecomendationsCell.self, forCellReuseIdentifier: String(describing: RecomendationsCell.self))
     }
 }

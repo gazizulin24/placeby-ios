@@ -14,8 +14,7 @@ struct GetAllPlacesRequestResponseSingleEntity: Codable {
     let nameOfPlace, description: String
     let photos: [PlacePhotoResponseEntity]
     let longitude, latitude: Double
+    let types: [PlaceTypeResponseEntity]
 }
-
-
 
 typealias GetAllPlacesRequestResponseEntity = [GetAllPlacesRequestResponseSingleEntity]

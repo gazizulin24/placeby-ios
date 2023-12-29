@@ -41,7 +41,7 @@ final class PlacesMapViewController: UIViewController {
 
     // MARK: - Private constants
 
-    private var place = Place(placeId:0,name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
+    private var place = Place(placeId: 0, name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
 
     private let belarusCoordinates = PlaceCoordinates(latitude: 53.902735, longitude: 27.555691)
 
@@ -137,7 +137,7 @@ private extension PlacesMapViewController {
         PlacesNetworkManager.getAllPlacesRequest { [self] responseEntity in
             if let responseEntity = responseEntity {
                 for placeResponseEntity in responseEntity {
-                    let singlePlace = Place(placeId:placeResponseEntity.id,name: placeResponseEntity.nameOfPlace, description: placeResponseEntity.description, distantion: "", images: [], coordinates: PlaceCoordinates(latitude: placeResponseEntity.latitude, longitude: placeResponseEntity.longitude))
+                    let singlePlace = Place(placeId: placeResponseEntity.id, name: placeResponseEntity.nameOfPlace, description: placeResponseEntity.description, distantion: "", images: [], coordinates: PlaceCoordinates(latitude: placeResponseEntity.latitude, longitude: placeResponseEntity.longitude))
                     self.addPlacemark(map, singlePlace)
                 }
             } else {

@@ -37,7 +37,7 @@ final class PlaceCell: UITableViewCell {
 
     // MARK: - Public properties
 
-    var place = Place(placeId:0, name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
+    var place = Place(placeId: 0, name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
 
     // MARK: - Private constant
 

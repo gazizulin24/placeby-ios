@@ -28,7 +28,7 @@ final class RecentlyPlacesViewController: UIViewController {
     private var data: [RecentlyPlacesTableViewCellType] = {
         var data = [RecentlyPlacesTableViewCellType]()
 
-        //data.append(.title("Тут пусто 😟"))
+        // data.append(.title("Тут пусто 😟"))
 
         return data
     }()
@@ -70,7 +70,7 @@ private extension RecentlyPlacesViewController {
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(view.snp.topMargin)
         }
-        
+
         refreshRecentlyPlacesAction()
     }
 
@@ -95,7 +95,7 @@ private extension RecentlyPlacesViewController {
 
         alert.addAction(UIAlertAction(title: "Да", style: .destructive, handler: { _ in
             print("clear")
-            
+
             self.removeRecentlyPlaces()
 
         }))
@@ -104,18 +104,17 @@ private extension RecentlyPlacesViewController {
         }))
         present(alert, animated: true, completion: nil)
     }
-    
-    @objc func removeRecentlyPlaces(){
+
+    @objc func removeRecentlyPlaces() {
         let userId = UserDefaults.standard.integer(forKey: "userId")
         RecentlyPlacesNetworkManager.makeDeleteRecentlyPlacesForPersonWithIdRequest(id: userId) { [self] responseEntity in
-            if let response = responseEntity{
+            if let response = responseEntity {
                 print(response.delete)
                 data = [.title("Тут пусто 😟")]
                 tableView.reloadData()
-            } else{
+            } else {
                 print("error makeDeleteRecentlyPlacesForPersonWithIdRequest")
             }
-            
         }
     }
 
@@ -124,27 +123,27 @@ private extension RecentlyPlacesViewController {
         RecentlyPlacesNetworkManager.makeGetRecentlyPlacesForPersonWithIdRequest(id: userId) { [self] responseEntity in
             if let response = responseEntity {
                 data = []
-                
+
                 for place in response.recentlyPlaces {
                     data.append(.place(RecentlyPlaceData(name: place.nameOfPlace, imageUrl: place.photos.first!.photoURL)))
                 }
-                
+
                 if data.count == 0 {
                     data.append(.title("Тут пусто 😟"))
                 }
-                
+
                 tableView.reloadData()
-                
-            } else{
+
+            } else {
+                if data.count == 0 {
+                    data.append(.title("Тут пусто 😟"))
+                }
+                tableView.reloadData()
                 print("error")
             }
             refresh.endRefreshing()
         }
-        
-        
     }
-
-    
 }
 
 // MARK: - UITableViewDataSource
@@ -158,7 +157,7 @@ extension RecentlyPlacesViewController: UITableViewDataSource {
         let index = indexPath.row
 
         switch data[index] {
-        case .place(let recentlyPlace):
+        case let .place(recentlyPlace):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecentlyPlaceCell.self)) as! RecentlyPlaceCell
 
             cell.configure(with: RecentlyPlaceData(name: recentlyPlace.name, imageUrl: recentlyPlace.imageUrl))

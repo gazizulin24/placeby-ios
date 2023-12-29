@@ -60,7 +60,7 @@ private extension AllPlacesViewController {
             make.size.equalToSuperview()
         }
         UserDefaults.standard.setValue("all", forKey: "allPlacesFilterDBTitle")
-        addPlacesToDataByFilter(by: UserDefaults.standard.string(forKey: "allPlacesFilterDBTitle") ?? "all")
+        addPlacesToDataByFilter(by: "all")
     }
 
     func setupNotifications() {
@@ -72,8 +72,6 @@ private extension AllPlacesViewController {
             filterTableView(with: placeType)
         }
     }
-
-    
 
     func filterTableView(with placeType: PlaceType) {
         data = []
@@ -93,24 +91,37 @@ private extension AllPlacesViewController {
                 data.removeLast()
                 if let responseEntity = responseEntity {
                     for placeResponse in responseEntity {
-                        let place = Place(placeId:placeResponse.id, name: placeResponse.nameOfPlace, description: placeResponse.description, distantion: placeResponse.photos.first!.photoURL, images: [], coordinates: PlaceCoordinates(latitude: placeResponse.latitude, longitude: placeResponse.longitude))
+                        print(placeResponse.types)
+                        let place = Place(placeId: placeResponse.id, name: placeResponse.nameOfPlace, description: placeResponse.description, distantion: placeResponse.photos.first!.photoURL, images: [], coordinates: PlaceCoordinates(latitude: placeResponse.latitude, longitude: placeResponse.longitude))
                         data.append(.place(place))
                     }
                 } else {
-                    for place in Place.basicPlaces {
+                    print("no data")
+                }
+                if data.count == 3 {
+                    data.append(.smallTitle("Тут пусто 😟"))
+                }
+                tableView.reloadData()
+            }
+        } else {
+            print("get places with filter:", filter)
+            PlacesNetworkManager.getAllPlacesByTypeRequest(filter) { [self] responseEntity in
+                data.removeLast()
+                if let responseEntity = responseEntity {
+                    for placeResponse in responseEntity {
+                        print(placeResponse.types)
+                        let place = Place(placeId: placeResponse.id, name: placeResponse.nameOfPlace, description: placeResponse.description, distantion: placeResponse.photos.first!.photoURL, images: [], coordinates: PlaceCoordinates(latitude: placeResponse.latitude, longitude: placeResponse.longitude))
                         data.append(.place(place))
                     }
+                } else {
+                    print("no data")
+                }
+                if data.count == 2 {
+                    data.append(.smallTitle("Тут пусто 😟"))
                 }
                 tableView.reloadData()
             }
         }
-//        else {
-//            data.removeLast()
-//            for place in Place.basicPlaces {
-//                data.append(.place(place))
-//            }
-//            tableView.reloadData()
-//        }
     }
 }
 
@@ -155,6 +166,12 @@ extension AllPlacesViewController: UITableViewDataSource {
 
             cell.reloadIndicator()
             return cell
+        case let .smallTitle(title):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SmallTitleCell.self), for: indexPath) as! SmallTitleCell
+
+            cell.configure(with: title)
+
+            return cell
         }
     }
 
@@ -168,7 +185,7 @@ extension AllPlacesViewController: UITableViewDataSource {
 
             UserDefaults.standard.setValue(place.placeId, forKey: "placeId")
             NotificationCenter.default.post(name: Notification.Name("findPlace"), object: nil)
-            
+
             if place.images.isEmpty {
                 placeVC.configureWithImageUrl(place: place, imageUrl: place.distantion)
             } else {

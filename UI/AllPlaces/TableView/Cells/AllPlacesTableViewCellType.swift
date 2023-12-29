@@ -9,6 +9,7 @@ import Foundation
 
 enum AllPlacesTableViewCellType {
     case title(String)
+    case smallTitle(String)
     case place(Place)
     case placeTypes
     case recomendations
