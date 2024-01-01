@@ -30,5 +30,6 @@ private extension RecentlyPlacesTableView {
 
         register(RecentlyPlaceCell.self, forCellReuseIdentifier: String(describing: RecentlyPlaceCell.self))
         register(SmallTitleCell.self, forCellReuseIdentifier: String(describing: SmallTitleCell.self))
+        register(RecentlyPlacesHeaderCell.self, forCellReuseIdentifier: String(describing: RecentlyPlacesHeaderCell.self))
     }
 }

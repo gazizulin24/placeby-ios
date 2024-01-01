@@ -12,10 +12,9 @@ import YandexMapsMobile
 final class PlacesMapViewController: UIViewController {
     // MARK: - Public
 
-    func focusOnPlace(_ place: Place) {
+    func focusOnPlace(_ place: GetAllPlacesRequestResponseSingleEntity) {
         self.place = place
-        // addPlacemark(mapView.mapWindow.map, place)
-        focusOn(coordinates: place.coordinates)
+        focusOn(coordinates: PlaceCoordinates(latitude: place.latitude, longitude: place.longitude))
     }
 
     func focusOn(coordinates coord: PlaceCoordinates) {
@@ -41,7 +40,7 @@ final class PlacesMapViewController: UIViewController {
 
     // MARK: - Private constants
 
-    private var place = Place(placeId: 0, name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
+    private var place = GetAllPlacesRequestResponseSingleEntity(id: 0, nameOfPlace: "", description: "", photos: [], longitude: 0, latitude: 0, types: [])
 
     private let belarusCoordinates = PlaceCoordinates(latitude: 53.902735, longitude: 27.555691)
 
@@ -86,7 +85,7 @@ private extension PlacesMapViewController {
         createUserPlacemark()
         setupNotifications()
 
-        if place.name == "" {
+        if place.nameOfPlace == "" {
             mapView.mapWindow.map.move(
                 with: YMKCameraPosition(
                     target: YMKPoint(latitude: belarusCoordinates.latitude, longitude: belarusCoordinates.longitude),
@@ -137,12 +136,7 @@ private extension PlacesMapViewController {
         PlacesNetworkManager.getAllPlacesRequest { [self] responseEntity in
             if let responseEntity = responseEntity {
                 for placeResponseEntity in responseEntity {
-                    let singlePlace = Place(placeId: placeResponseEntity.id, name: placeResponseEntity.nameOfPlace, description: placeResponseEntity.description, distantion: "", images: [], coordinates: PlaceCoordinates(latitude: placeResponseEntity.latitude, longitude: placeResponseEntity.longitude))
-                    self.addPlacemark(map, singlePlace)
-                }
-            } else {
-                for place in Place.basicPlaces {
-                    self.addPlacemark(map, place)
+                    self.addPlacemark(map, placeResponseEntity)
                 }
             }
         }
@@ -177,15 +171,15 @@ private extension PlacesMapViewController {
         updateUserPlacemark(lat: userLat, long: userLong)
     }
 
-    func addPlacemark(_ map: YMKMap, _ place: Place) {
+    func addPlacemark(_ map: YMKMap, _ place: GetAllPlacesRequestResponseSingleEntity) {
         print(place)
         let image = UIImage(named: "placemark_icon") ?? UIImage(systemName: "person")!
         let placemark = map.mapObjects.addPlacemark()
-        placemark.geometry = YMKPoint(latitude: place.coordinates.latitude,
-                                      longitude: place.coordinates.longitude)
+        placemark.geometry = YMKPoint(latitude: place.latitude,
+                                      longitude: place.longitude)
 
         placemark.setTextWithText(
-            place.name,
+            place.nameOfPlace,
             style: YMKTextStyle(
                 size: 10.0,
                 color: .black,

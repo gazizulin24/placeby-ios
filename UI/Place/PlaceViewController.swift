@@ -11,29 +11,27 @@ import UIKit
 import YandexMapsMobile
 
 final class PlaceViewController: UIViewController {
-    func configure(with place: Place) {
-        print(place)
-        self.place = place
-
-        placeImageView.image = UIImage(named: place.images.first!)
-        placeLabel.text = place.name
-        placeDescriptionLabel.text = place.description
-        distantionLabel.text = "\(place.distantion) от Вас"
-
-        focusOnPlace(coordinates: place.coordinates)
+    
+    // MARK: - Public
+    
+    func configureWithId(_ id:Int){
+        PlacesNetworkManager.getPlacebyIdRequest(id) {[self] responseEntity in
+            if let response = responseEntity {
+                setImageByUrl(url: response.photos.first!.photoURL)
+                placeLabel.text = response.nameOfPlace
+                placeDescriptionLabel.text = response.description
+                
+                let coordinates = PlaceCoordinates(latitude: response.latitude, longitude: response.longitude)
+                focusOnPlace(coordinates: coordinates)
+                let distantion = DistantionCalculator.shared.calculateDistanceFromUser(coordinates)
+                distantionLabel.text = "\(distantion.rounded(.towardZero))км от вас"
+            } else{
+                print(" error getPlacebyIdRequest")
+            }
+        }
     }
+    
 
-    func configureWithImageUrl(place: Place, imageUrl: String) {
-        print(place)
-        self.place = place
-
-        setImageByUrl(url: imageUrl)
-        placeLabel.text = place.name
-        placeDescriptionLabel.text = place.description
-        distantionLabel.text = "\(place.distantion) от Вас"
-
-        focusOnPlace(coordinates: place.coordinates)
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +59,7 @@ final class PlaceViewController: UIViewController {
 
     private var isLiked = false
 
-    private var place = Place(placeId: 0, name: "", description: "", distantion: "", images: [], coordinates: PlaceCoordinates(latitude: 0, longitude: 0))
+    private var place:GetAllPlacesRequestResponseSingleEntity!
 
     private let placeMap: YMKMapView = {
         let mapView = YMKMapView()
@@ -189,7 +187,7 @@ private extension PlaceViewController {
     }
 
     @objc func shareButtonPressed() {
-        let ac = UIActivityViewController(activityItems: [place.name], applicationActivities: nil)
+        let ac = UIActivityViewController(activityItems: [place.nameOfPlace], applicationActivities: nil)
 
         present(ac, animated: true)
     }
@@ -219,8 +217,8 @@ private extension PlaceViewController {
     }
 
     @objc func tapToPlaceMapView() {
-        UserDefaults.standard.setValue(place.coordinates.latitude, forKey: "placeToOpenLatitude")
-        UserDefaults.standard.setValue(place.coordinates.longitude, forKey: "placeToOpenLongitude")
+        UserDefaults.standard.setValue(place.latitude, forKey: "placeToOpenLatitude")
+        UserDefaults.standard.setValue(place.longitude, forKey: "placeToOpenLongitude")
         NotificationCenter.default.post(Notification(name: Notification.Name("openPlaceOnMap")))
     }
 

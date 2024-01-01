@@ -10,7 +10,7 @@ import Foundation
 enum AllPlacesTableViewCellType {
     case title(String)
     case smallTitle(String)
-    case place(Place)
+    case place(GetAllPlacesRequestResponseSingleEntity)
     case placeTypes
     case recomendations
     case loading

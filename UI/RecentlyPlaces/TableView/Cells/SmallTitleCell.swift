@@ -32,13 +32,15 @@ class SmallTitleCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
 
-        label.text = "Все места"
+        label.text = ""
         label.font = .systemFont(ofSize: 20)
         label.textAlignment = .center
         label.textColor = .black
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
+    
+    
 }
 
 // MARK: - Private methods

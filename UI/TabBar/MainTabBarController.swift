@@ -13,6 +13,7 @@ final class MainTabBarController: UITabBarController {
 
     private let mainTabBar = MainTabBar()
     private let locationManager = CLLocationManager()
+    private var prevSelectedIndex = 0
 
     // MARK: - View Lifecycle
 
@@ -111,15 +112,13 @@ extension MainTabBarController: CLLocationManagerDelegate {
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
 
-        // Делайте что-то с полученными координатами
-        print("Широта: \(latitude), Долгота: \(longitude)")
+        //print("Широта: \(latitude), Долгота: \(longitude)")
         UserDefaults.standard.setValue(latitude, forKey: "userLatitude")
         UserDefaults.standard.setValue(longitude, forKey: "userLongitude")
         NotificationCenter.default.post(name: Notification.Name("userLocationUpdated"), object: nil)
     }
 
     func locationManager(_: CLLocationManager, didFailWithError error: Error) {
-        // Обработка ошибки получения координат
         print("Ошибка получения координат: \(error.localizedDescription)")
     }
 }
@@ -228,13 +227,15 @@ private extension MainTabBarController {
 
         RecentlyPlacesNetworkManager.makePostAddRecentlyPlaceForPersonWithIdRequest(personId: userId, placeId: placeId)
 
-//        if let vc = viewControllers?.first as? UINavigationController{
-//            let placeVC = PlaceViewController()
-//
-//           // placeVC.con
-//
-//            //vc.pushViewController()
-//        }
+        if let vc = viewControllers?.first as? UINavigationController{
+            let placeVC = PlaceViewController()
+
+            placeVC.configureWithId(placeId)
+            
+            vc.pushViewController(placeVC, animated: true)
+            
+            
+        }
     }
 }
 
@@ -242,8 +243,11 @@ private extension MainTabBarController {
 
 extension MainTabBarController: UITabBarControllerDelegate {
     func tabBarController(_: UITabBarController, didSelect viewController: UIViewController) {
-        if let viewController = viewController as? UINavigationController {
-            viewController.navigationBar.isHidden = true
+        if prevSelectedIndex == selectedIndex{
+            if let viewController = viewController as? UINavigationController {
+                viewController.navigationBar.isHidden = true
+            }
         }
+        prevSelectedIndex = selectedIndex
     }
 }

@@ -25,4 +25,13 @@ enum PlacesNetworkManager {
             completion(response.value)
         }
     }
+    
+    static func getPlacebyIdRequest(_ id:Int, completion: @escaping (GetAllPlacesRequestResponseSingleEntity?) -> ()){
+        let url = Endpoints.getAllPlacesEndpoint + "/" + String(id)
+        
+        AF.request(url, method: .get, encoding: JSONEncoding.default).responseDecodable(of: GetAllPlacesRequestResponseSingleEntity.self) { response in
+            completion(response.value)
+        }
+        
+    }
 }

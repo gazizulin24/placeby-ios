@@ -91,9 +91,8 @@ private extension AllPlacesViewController {
                 data.removeLast()
                 if let responseEntity = responseEntity {
                     for placeResponse in responseEntity {
-                        print(placeResponse.types)
-                        let place = Place(placeId: placeResponse.id, name: placeResponse.nameOfPlace, description: placeResponse.description, distantion: placeResponse.photos.first!.photoURL, images: [], coordinates: PlaceCoordinates(latitude: placeResponse.latitude, longitude: placeResponse.longitude))
-                        data.append(.place(place))
+                        
+                        data.append(.place(placeResponse))
                     }
                 } else {
                     print("no data")
@@ -104,14 +103,11 @@ private extension AllPlacesViewController {
                 tableView.reloadData()
             }
         } else {
-            print("get places with filter:", filter)
             PlacesNetworkManager.getAllPlacesByTypeRequest(filter) { [self] responseEntity in
                 data.removeLast()
                 if let responseEntity = responseEntity {
                     for placeResponse in responseEntity {
-                        print(placeResponse.types)
-                        let place = Place(placeId: placeResponse.id, name: placeResponse.nameOfPlace, description: placeResponse.description, distantion: placeResponse.photos.first!.photoURL, images: [], coordinates: PlaceCoordinates(latitude: placeResponse.latitude, longitude: placeResponse.longitude))
-                        data.append(.place(place))
+                        data.append(.place(placeResponse))
                     }
                 } else {
                     print("no data")
@@ -143,12 +139,7 @@ extension AllPlacesViewController: UITableViewDataSource {
         case let .place(place):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceCell.self), for: indexPath) as! PlaceCell
 
-            if place.images.isEmpty {
-                print(place.distantion)
-                cell.configureWithPhotoUrl(place: place, photoUrl: place.distantion)
-            } else {
-                cell.configure(with: place)
-            }
+            cell.configure(with: place)
 
             cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlace(_:))))
             return cell
@@ -176,23 +167,12 @@ extension AllPlacesViewController: UITableViewDataSource {
     }
 
     @objc func tapToPlace(_ sender: UITapGestureRecognizer) {
+        
         if let view = sender.view as? PlaceCell {
-            let placeVC = PlaceViewController()
-
-            let place = view.place
-
-            print("place: ", place.images.isEmpty)
-
-            UserDefaults.standard.setValue(place.placeId, forKey: "placeId")
+            
+            UserDefaults.standard.setValue(view.placeId, forKey: "placeId")
             NotificationCenter.default.post(name: Notification.Name("findPlace"), object: nil)
-
-            if place.images.isEmpty {
-                placeVC.configureWithImageUrl(place: place, imageUrl: place.distantion)
-            } else {
-                placeVC.configure(with: view.place)
-            }
-
-            navigationController?.pushViewController(placeVC, animated: true)
+            
         }
     }
 }

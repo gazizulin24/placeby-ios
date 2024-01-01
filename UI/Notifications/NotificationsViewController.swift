@@ -96,6 +96,7 @@ private extension NotificationsViewController {
 
     func configNavigation() {
         navigationController?.isNavigationBarHidden = false
+        navigationController?.navigationBar.isHidden = false
         navigationController?.navigationBar.tintColor = .black
         navigationItem.leftBarButtonItems = getLeftBarButtonItems()
         navigationController?.navigationBar.barTintColor = .white

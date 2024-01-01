@@ -16,6 +16,13 @@ final class RecentlyPlacesViewController: UIViewController {
         initialize()
     }
 
+    // MARK: - Private constants
+
+    private enum TextConstants {
+        static let headerCellText: String = "Недавние"
+        static let noPlacesText: String = "Тут пусто 😟"
+    }
+
     // MARK: - Private properties
 
     private lazy var refresh: UIRefreshControl = {
@@ -28,7 +35,7 @@ final class RecentlyPlacesViewController: UIViewController {
     private var data: [RecentlyPlacesTableViewCellType] = {
         var data = [RecentlyPlacesTableViewCellType]()
 
-        // data.append(.title("Тут пусто 😟"))
+        data.append(.header(TextConstants.headerCellText))
 
         return data
     }()
@@ -36,7 +43,7 @@ final class RecentlyPlacesViewController: UIViewController {
     private let titleLabelView: UILabel = {
         let label = UILabel()
 
-        label.text = "Недавние"
+        label.text = TextConstants.headerCellText
         label.font = .systemFont(ofSize: 35, weight: .bold)
         label.textAlignment = .center
         label.textColor = .black
@@ -59,9 +66,11 @@ final class RecentlyPlacesViewController: UIViewController {
 private extension RecentlyPlacesViewController {
     func initialize() {
         view.backgroundColor = .white
-        navigationItem.titleView = titleLabelView
-
-        configNavigation()
+        
+        navigationController?.isNavigationBarHidden = true
+        //configNavigation()
+        
+        setupNotifications()
 
         view.addSubview(tableView)
         tableView.addSubview(refresh)
@@ -73,9 +82,13 @@ private extension RecentlyPlacesViewController {
 
         refreshRecentlyPlacesAction()
     }
+    
+    func setupNotifications(){
+        NotificationCenter.default.addObserver(self, selector: #selector(clearRecentlyPlaces), name: Notification.Name("clearRecentlyPlaces"), object: nil)
+    }
 
     func configNavigation() {
-        navigationController?.isNavigationBarHidden = false
+        navigationItem.titleView = titleLabelView
         navigationController?.navigationBar.tintColor = .black
         navigationItem.rightBarButtonItems = getRightBarButtonItems()
         navigationController?.navigationBar.barTintColor = .white
@@ -110,7 +123,7 @@ private extension RecentlyPlacesViewController {
         RecentlyPlacesNetworkManager.makeDeleteRecentlyPlacesForPersonWithIdRequest(id: userId) { [self] responseEntity in
             if let response = responseEntity {
                 print(response.delete)
-                data = [.title("Тут пусто 😟")]
+                data = [.header(TextConstants.headerCellText), .title(TextConstants.noPlacesText)]
                 tableView.reloadData()
             } else {
                 print("error makeDeleteRecentlyPlacesForPersonWithIdRequest")
@@ -122,22 +135,22 @@ private extension RecentlyPlacesViewController {
         let userId = UserDefaults.standard.integer(forKey: "userId")
         RecentlyPlacesNetworkManager.makeGetRecentlyPlacesForPersonWithIdRequest(id: userId) { [self] responseEntity in
             if let response = responseEntity {
-                data = []
+                data = [.header(TextConstants.headerCellText)]
 
                 for place in response.recentlyPlaces {
                     data.append(.place(RecentlyPlaceData(name: place.nameOfPlace, imageUrl: place.photos.first!.photoURL)))
                 }
 
-                if data.count == 0 {
-                    data.append(.title("Тут пусто 😟"))
+                if data.count == 1 {
+                    data.append(.title(TextConstants.noPlacesText))
                 }
 
                 tableView.reloadData()
 
             } else {
-                if data.count == 0 {
-                    data.append(.title("Тут пусто 😟"))
-                }
+                data = []
+                data.append(.header(TextConstants.headerCellText))
+                data.append(.title(TextConstants.noPlacesText))
                 tableView.reloadData()
                 print("error")
             }
@@ -167,6 +180,12 @@ extension RecentlyPlacesViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SmallTitleCell.self)) as! SmallTitleCell
 
             cell.configure(with: text)
+
+            return cell
+        case let .header(title):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecentlyPlacesHeaderCell.self)) as! RecentlyPlacesHeaderCell
+
+            cell.configure(title: title)
 
             return cell
         }

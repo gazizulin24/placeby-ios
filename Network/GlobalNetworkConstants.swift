@@ -10,3 +10,4 @@ import Foundation
 enum GlobalNetworkConstants {
     static let host: String = "https://placeby-ec1039c9a5f2.herokuapp.com"
 }
+

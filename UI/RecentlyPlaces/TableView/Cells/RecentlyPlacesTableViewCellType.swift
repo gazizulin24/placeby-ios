@@ -10,4 +10,5 @@ import Foundation
 enum RecentlyPlacesTableViewCellType {
     case place(RecentlyPlaceData)
     case title(String)
+    case header(String)
 }
