@@ -80,9 +80,8 @@ private extension ProfileViewController {
         view.addSubview(mainTableView)
 
         mainTableView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.center.width.bottom.equalToSuperview()
             make.top.equalTo(view.snp.topMargin)
-            make.width.bottom.equalToSuperview()
         }
     }
 

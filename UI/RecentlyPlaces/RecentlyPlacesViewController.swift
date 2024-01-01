@@ -138,7 +138,7 @@ private extension RecentlyPlacesViewController {
                 data = [.header(TextConstants.headerCellText)]
 
                 for place in response.recentlyPlaces {
-                    data.append(.place(RecentlyPlaceData(name: place.nameOfPlace, imageUrl: place.photos.first!.photoURL)))
+                    data.append(.place(RecentlyPlaceData(name: place.nameOfPlace, imageUrl: place.photos.first!.photoURL, id:place.id)))
                 }
 
                 if data.count == 1 {
@@ -173,7 +173,7 @@ extension RecentlyPlacesViewController: UITableViewDataSource {
         case let .place(recentlyPlace):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecentlyPlaceCell.self)) as! RecentlyPlaceCell
 
-            cell.configure(with: RecentlyPlaceData(name: recentlyPlace.name, imageUrl: recentlyPlace.imageUrl))
+            cell.configure(with: RecentlyPlaceData(name: recentlyPlace.name, imageUrl: recentlyPlace.imageUrl, id:recentlyPlace.id))
 
             return cell
         case let .title(text):

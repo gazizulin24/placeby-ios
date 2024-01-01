@@ -234,7 +234,6 @@ private extension MainTabBarController {
             
             vc.pushViewController(placeVC, animated: true)
             
-            
         }
     }
 }

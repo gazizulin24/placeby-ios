@@ -13,6 +13,7 @@ final class PlaceCell: UITableViewCell {
 
     func configure(with place:GetAllPlacesRequestResponseSingleEntity) {
         setImageByUrl(url: place.photos.first!.photoURL)
+
         titleLabel.text = place.nameOfPlace
         descriptionLabel.text = place.description
         placeId = place.id
@@ -143,7 +144,7 @@ private extension PlaceCell {
         contentCardView.addSubview(titleLabel)
 
         titleLabel.snp.makeConstraints { make in
-            make.width.equalToSuperview().multipliedBy(0.5)
+            make.width.equalToSuperview().multipliedBy(0.6)
             make.leading.equalToSuperview().offset(UIConstants.titleLabelLeadingOffset)
             make.top.equalTo(placeImage.snp.bottom).offset(UIConstants.titleLabelTopOffset)
             make.height.equalTo(UIConstants.titleLabelHeight)

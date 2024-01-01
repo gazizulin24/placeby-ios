@@ -16,17 +16,22 @@ final class PlaceViewController: UIViewController {
     
     func configureWithId(_ id:Int){
         PlacesNetworkManager.getPlacebyIdRequest(id) {[self] responseEntity in
-            if let response = responseEntity {
-                setImageByUrl(url: response.photos.first!.photoURL)
-                placeLabel.text = response.nameOfPlace
-                placeDescriptionLabel.text = response.description
+            if let place = responseEntity {
+                placeDataLoaded()
+                self.place = place
+                placeLabel.text = place.nameOfPlace
+                print(placeLabel.text!)
+                navigationItem.titleView = placeLabel
                 
-                let coordinates = PlaceCoordinates(latitude: response.latitude, longitude: response.longitude)
-                focusOnPlace(coordinates: coordinates)
-                let distantion = DistantionCalculator.shared.calculateDistanceFromUser(coordinates)
-                distantionLabel.text = "\(distantion.rounded(.towardZero))км от вас"
+                data = []
+                
+                data.append(.images(place.photos))
+                
+                placeTableView.reloadData()
+                print(data.count)
+                
             } else{
-                print(" error getPlacebyIdRequest")
+                print("error getPlacebyIdRequest")
             }
         }
     }
@@ -56,10 +61,34 @@ final class PlaceViewController: UIViewController {
     }
 
     // MARK: - Private properties
+    
+    private var data:[PlaceTableViewCellType] = []
 
     private var isLiked = false
 
     private var place:GetAllPlacesRequestResponseSingleEntity!
+    
+    lazy private var placeTableView:PlaceTableView = {
+        let tableView = PlaceTableView()
+        
+        tableView.backgroundColor = .white
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        return tableView
+    }()
+    
+    private let indicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+
+        indicator.startAnimating()
+
+        indicator.color = .black
+
+        return indicator
+    }()
+    
 
     private let placeMap: YMKMapView = {
         let mapView = YMKMapView()
@@ -78,55 +107,27 @@ final class PlaceViewController: UIViewController {
         view.addSubview(placeMap)
 
         placeMap.snp.makeConstraints { make in
-            make.centerX.centerY.size.equalToSuperview()
+            make.center.equalToSuperview()
+            make.top.equalTo(view.snp.topMargin)
+            make.width.bottom.equalToSuperview()
         }
 
         return view
     }()
 
-    private let placeImageView: UIImageView = {
-        let imageView = UIImageView()
+    
 
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 10
-        imageView.backgroundColor = .lightGray
-
-        return imageView
-    }()
-
-    private let placeLabel: UILabel = {
+    private let placeLabel:UILabel = {
         let label = UILabel()
-
+        
         label.font = .systemFont(ofSize: UIConstants.placeLabelFontSize, weight: .bold)
         label.adjustsFontSizeToFitWidth = true
         label.textColor = .black
         label.textAlignment = .center
-
+        
         return label
     }()
 
-    private let placeDescriptionLabel: UILabel = {
-        let label = UILabel()
-
-        label.font = .systemFont(ofSize: UIConstants.placeLabelFontSize)
-        label.textColor = .darkGray
-        label.textAlignment = .center
-        label.numberOfLines = 3
-
-        return label
-    }()
-
-    private let distantionLabel: UILabel = {
-        let label = UILabel()
-
-        label.font = .systemFont(ofSize: 15)
-        label.textColor = .black
-        label.textAlignment = .center
-        label.numberOfLines = 1
-
-        return label
-    }()
 }
 
 private extension PlaceViewController {
@@ -141,39 +142,30 @@ private extension PlaceViewController {
         navigationItem.leftBarButtonItems = getLeftBarButtonItems()
         navigationItem.rightBarButtonItems = getRightBarButtonItems()
 
-        navigationItem.titleView = placeLabel
+        navigationItem.titleView = indicator
 
-        view.addSubview(placeImageView)
+        view.addSubview(indicator)
 
-        placeImageView.snp.makeConstraints { make in
-            make.centerX.width.equalToSuperview()
+        indicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        placeTableView.isHidden = true
+        
+        view.addSubview(placeTableView)
+        
+        placeTableView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
             make.top.equalTo(view.snp.topMargin)
-            make.height.equalTo(UIConstants.imageHeight)
+            make.width.bottom.equalToSuperview()
         }
-
-        view.addSubview(placeDescriptionLabel)
-
-        placeDescriptionLabel.snp.makeConstraints { make in
-            make.centerX.width.equalToSuperview()
-            make.top.equalTo(placeImageView.snp.bottom).offset(UIConstants.imageToLabelOffset)
-        }
-
-        placeMapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlaceMapView)))
-        view.addSubview(placeMapView)
-
-        placeMapView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(UIConstants.placeMapViewWidthMultiplier)
-            make.height.equalTo(UIConstants.placeMapViewHeight)
-            make.top.equalTo(placeDescriptionLabel.snp.bottom).offset(UIConstants.labelToMapOffset)
-        }
-
-        view.addSubview(distantionLabel)
-
-        distantionLabel.snp.makeConstraints { make in
-            make.centerX.width.equalToSuperview()
-            make.top.equalTo(placeMapView.snp.bottom).offset(UIConstants.imageToLabelOffset)
-        }
+        
+    }
+    
+    func placeDataLoaded(){
+        indicator.stopAnimating()
+        indicator.isHidden = true
+        placeTableView.isHidden = false
     }
 
     func getRightBarButtonItems() -> [UIBarButtonItem] {
@@ -188,7 +180,7 @@ private extension PlaceViewController {
 
     @objc func shareButtonPressed() {
         let ac = UIActivityViewController(activityItems: [place.nameOfPlace], applicationActivities: nil)
-
+        
         present(ac, animated: true)
     }
 
@@ -238,11 +230,44 @@ private extension PlaceViewController {
     func setImageByUrl(url: String) {
         PhotosNetworkManager.loadPhoto(url: url) { [self] responseData in
             if let data = responseData {
-                placeImageView.image = UIImage(data: data)
-                print("drew a photo: ", placeImageView.image ?? "nil")
+                print(data)
             } else {
                 print("не удалось загрузить фото")
             }
         }
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension PlaceViewController:UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return data.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let index = indexPath.row
+        
+        switch data[index] {
+        case .images(let images):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ImagesCell.self)) as! ImagesCell
+            cell.configure(images: images)
+            
+            return cell
+        }
+    }
+    
+}
+
+
+// MARK: - UITableViewDelegate
+
+extension PlaceViewController: UITableViewDelegate {
+    func tableView(_: UITableView, willDisplay cell: UITableViewCell, forRowAt _: IndexPath) {
+        cell.alpha = 0
+
+        UIView.animate(withDuration: 0.3) {
+                cell.alpha = 1
+            }
+        
     }
 }
