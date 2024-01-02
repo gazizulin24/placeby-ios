@@ -10,4 +10,7 @@ import Foundation
 
 enum PlaceTableViewCellType {
     case images([PlacePhotoResponseEntity])
+    case description(GetAllPlacesRequestResponseSingleEntity)
+    case categories(GetAllPlacesRequestResponseSingleEntity)
+    case map(GetAllPlacesRequestResponseSingleEntity)
 }

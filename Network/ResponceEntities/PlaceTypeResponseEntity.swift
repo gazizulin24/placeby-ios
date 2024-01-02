@@ -12,4 +12,6 @@ import Foundation
  struct PlaceTypeResponseEntity: Codable {
     let id: Int
     let name: String
+     
+     
 }

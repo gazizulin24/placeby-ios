@@ -23,12 +23,19 @@ final class PlaceViewController: UIViewController {
                 print(placeLabel.text!)
                 navigationItem.titleView = placeLabel
                 
+                checkIsPlaceIsFav(place.id)
+                
                 data = []
                 
+                
+                
                 data.append(.images(place.photos))
+                data.append(.description(place))
+                data.append(.map(place))
+                data.append(.categories(place))
+                
                 
                 placeTableView.reloadData()
-                print(data.count)
                 
             } else{
                 print("error getPlacebyIdRequest")
@@ -162,6 +169,19 @@ private extension PlaceViewController {
         
     }
     
+    func checkIsPlaceIsFav(_ placeId:Int){
+        let userId = UserDefaults.standard.integer(forKey: "userId")
+        PlacesNetworkManager.isPlaceIsFavouriteForUser(userId: userId, placeId: placeId) { [self] responseEntity in
+            if let response = responseEntity {
+                setLikedButton(response.isFavourite)
+            } else{
+                print("error isPlaceIsFavouriteForUser")
+                setLikedButton(true)
+            }
+            
+        }
+    }
+    
     func placeDataLoaded(){
         indicator.stopAnimating()
         indicator.isHidden = true
@@ -190,6 +210,15 @@ private extension PlaceViewController {
         items.append(UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(backButtonPressed)))
 
         return items
+    }
+    
+    func setLikedButton(_ isActive: Bool) {
+        isLiked = isActive
+        if isLiked {
+            navigationItem.rightBarButtonItems?.first?.image = ImageConstants.likedImage
+        } else {
+            navigationItem.rightBarButtonItems?.first?.image = ImageConstants.unlikedImage
+        }
     }
 
     @objc func likeButtonTapped(_ sender: UIBarButtonItem) {
@@ -242,6 +271,25 @@ extension PlaceViewController:UITableViewDataSource {
         case .images(let images):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ImagesCell.self)) as! ImagesCell
             cell.configure(images: images)
+            
+            return cell
+        case .description(let data):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceDescriptionCell.self), for: indexPath) as! PlaceDescriptionCell
+            
+            cell.configure(with:data)
+            
+            return cell
+            
+        case .categories(let place):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceCategoriesCell.self), for: indexPath) as! PlaceCategoriesCell
+            
+            cell.configure(with: place)
+            
+            return cell
+        case .map(let place):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceMapCell.self), for: indexPath) as! PlaceMapCell
+            
+            cell.configure(with: place)
             
             return cell
         }

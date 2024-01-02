@@ -13,15 +13,12 @@ final class PlaceCell: UITableViewCell {
 
     func configure(with place:GetAllPlacesRequestResponseSingleEntity) {
         setImageByUrl(url: place.photos.first!.photoURL)
+        
+        rateLabel.text = "5.0"
 
         titleLabel.text = place.nameOfPlace
         descriptionLabel.text = place.description
         placeId = place.id
-        
-        let distantion = DistantionCalculator.shared.calculateDistanceFromUser(PlaceCoordinates(latitude: place.latitude, longitude: place.longitude))
-        print(distantion)
-        distantionLabel.text = "\(distantion.rounded(toDecimalPlaces: 1)) км"
-        
     }
 
     // MARK: - Initialization
@@ -57,8 +54,9 @@ final class PlaceCell: UITableViewCell {
         static let titleLabelLeadingOffset: CGFloat = 10
         static let titleLabelTopOffset:CGFloat = 5
         static let descriptionLabelTopOffset:CGFloat = 3
-        static let distantionLabelTopOffset:CGFloat = 5
+        static let rateViewTopOffset:CGFloat = 5
         static let distantionLabelHeight:CGFloat = 60
+        static let rateLabelFontSize:CGFloat = 20
     }
 
     // MARK: - Private properties
@@ -99,19 +97,32 @@ final class PlaceCell: UITableViewCell {
 
         return label
     }()
-
-    private let distantionLabel: UILabel = {
+    
+    private let rateLabel:UILabel = {
         let label = UILabel()
-
-        label.font = .systemFont(ofSize: UIConstants.titleLabelFontSize-10, weight: .bold)
-        label.textColor = .black
+        
         label.textAlignment = .center
-        label.backgroundColor = UIColor(cgColor: CGColor(red: 251/255, green: 211/255, blue: 59/255, alpha: 0.5))
-        label.adjustsFontSizeToFitWidth = true
-        label.clipsToBounds = true
-        label.layer.cornerRadius = 10
-
+        label.textColor = UIColor(cgColor: CGColor(red: 51 / 255, green: 51 / 255, blue: 51 / 255, alpha: 1))
+        label.font = .systemFont(ofSize: UIConstants.rateLabelFontSize, weight: .bold)
+        
         return label
+    }()
+    
+    
+    private let starImage:UIImageView = {
+        let imageView = UIImageView()
+        
+        imageView.image = UIImage(systemName: "star.fill")?.withTintColor(UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1)), renderingMode: .alwaysOriginal)
+        imageView.contentMode = .scaleAspectFit
+        
+        return imageView
+    }()
+    
+    private let rateView:UIView = {
+        let view = UIView()
+        
+        view.backgroundColor = .white
+        return view
     }()
 }
 
@@ -158,14 +169,31 @@ private extension PlaceCell {
             make.width.equalToSuperview().multipliedBy(0.6)
         }
         
-        contentCardView.addSubview(distantionLabel)
+        contentCardView.addSubview(rateView)
         
-        distantionLabel.snp.makeConstraints { make in
+        rateView.snp.makeConstraints { make in
             make.trailing.equalToSuperview()
-            make.top.equalTo(placeImage.snp.bottom).offset(UIConstants.distantionLabelTopOffset)
-            make.width.equalToSuperview().multipliedBy(0.3)
+            make.top.equalTo(placeImage.snp.bottom).offset(UIConstants.rateViewTopOffset)
+            make.width.equalToSuperview().multipliedBy(0.2)
             make.height.equalTo(UIConstants.distantionLabelHeight)
         }
+        
+        rateView.addSubview(starImage)
+        
+        starImage.snp.makeConstraints { make in
+            make.trailing.centerY.height.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.5)
+        }
+        
+        rateView.addSubview(rateLabel)
+        
+        rateLabel.snp.makeConstraints { make in
+            make.leading.top.height.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.5)
+            
+        }
+        
+        
     }
 
     func setImageByUrl(url: String) {

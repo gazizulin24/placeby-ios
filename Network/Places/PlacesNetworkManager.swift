@@ -11,6 +11,7 @@ final class PlacesNetworkManager {
     private enum Endpoints {
         static let getAllPlacesEndpoint: String = GlobalNetworkConstants.host + "/places"
         static let getAllPlacesByTypeEndpoint: String = GlobalNetworkConstants.host + "/places/type/"
+        static let getIsPlaceIsFavouriteForUserEndpoint: String = GlobalNetworkConstants.host + "/places/isFav"
     }
 
     static func getAllPlacesRequest(completion: @escaping (GetAllPlacesRequestResponseEntity?) -> Void) {
@@ -32,6 +33,20 @@ final class PlacesNetworkManager {
         AF.request(url, method: .get, encoding: JSONEncoding.default).responseDecodable(of: GetAllPlacesRequestResponseSingleEntity.self) { response in
             completion(response.value)
         }
-        
+    }
+    
+    static func isPlaceIsFavouriteForUser(userId:Int, placeId:Int, completion: @escaping (IsPlaceIsFavouriteResponseEntity?) -> ()){
+        let parametrs: Parameters = [
+            "personId": userId,
+            "placeId": placeId
+        ]
+        let headers: HTTPHeaders = [
+            "Content-Type": "application/json",
+        ]
+
+        AF.request(Endpoints.getIsPlaceIsFavouriteForUserEndpoint, method: .get, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).responseDecodable(of: IsPlaceIsFavouriteResponseEntity.self) { response in
+            print(response)
+            completion(response.value)
+        }
     }
 }

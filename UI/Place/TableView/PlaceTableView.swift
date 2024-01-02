@@ -12,7 +12,6 @@ final class PlaceTableView: UITableView {
     
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
-        
         initialize()
     }
     
@@ -33,5 +32,8 @@ private extension PlaceTableView {
         
         
         register(ImagesCell.self, forCellReuseIdentifier: String(describing: ImagesCell.self))
+        register(PlaceCategoriesCell.self, forCellReuseIdentifier: String(describing: PlaceCategoriesCell.self))
+        register(PlaceDescriptionCell.self, forCellReuseIdentifier: String(describing: PlaceDescriptionCell.self))
+        register(PlaceMapCell.self, forCellReuseIdentifier: String(describing: PlaceMapCell.self))
     }
 }
