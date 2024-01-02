@@ -8,7 +8,7 @@
 import SnapKit
 import UIKit
 
-class RecentlyPlacesHeaderCell: UITableViewCell {
+final class RecentlyPlacesHeaderCell: UITableViewCell {
     // MARK: - Public
 
     func configure(title: String) {

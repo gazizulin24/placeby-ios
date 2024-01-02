@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SmallTitleCell: UITableViewCell {
+final class SmallTitleCell: UITableViewCell {
     // MARK: - Public
 
     func configure(with title: String) {

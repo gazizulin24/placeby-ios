@@ -7,8 +7,8 @@
 
 import UIKit
 
-class UsernameProfileCell: UITableViewCell {
-    func configure(username username: String, sex sex: String) {
+final class UsernameProfileCell: UITableViewCell {
+    func configure(username: String, sex: String) {
         print("username: ", username)
         usernameLabel.text = "Здравствуйте, \(username)!"
 

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PlaceTableView: UITableView {
+final class PlaceTableView: UITableView {
     // MARK: - Init
     
     override init(frame: CGRect, style: UITableView.Style) {

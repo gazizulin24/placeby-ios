@@ -8,7 +8,7 @@
 import SnapKit
 import UIKit
 
-class NotificationsViewController: UIViewController {
+final class NotificationsViewController: UIViewController {
     // MARK: - Lifecycle
 
     override func viewDidLoad() {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ConfirmPhoneNumberRequestResponseEntity: Decodable {
+ struct ConfirmPhoneNumberRequestResponseEntity: Decodable {
     let isRegistred: Bool?
     let isCodeValid: Bool
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NotificationsPageTableView: UITableView {
+final class NotificationsPageTableView: UITableView {
     // MARK: - Initialization
 
     override init(frame: CGRect, style: UITableView.Style) {

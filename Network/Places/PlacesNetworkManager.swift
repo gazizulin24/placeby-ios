@@ -7,7 +7,7 @@
 
 import Alamofire
 
-enum PlacesNetworkManager {
+final class PlacesNetworkManager {
     private enum Endpoints {
         static let getAllPlacesEndpoint: String = GlobalNetworkConstants.host + "/places"
         static let getAllPlacesByTypeEndpoint: String = GlobalNetworkConstants.host + "/places/type/"

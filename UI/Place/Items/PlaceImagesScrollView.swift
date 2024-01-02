@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PlaceImagesScrollView: UIScrollView {
+final class PlaceImagesScrollView: UIScrollView {
     
     // MARK: - Public
     func addImages(images: [PlacePhotoResponseEntity]){

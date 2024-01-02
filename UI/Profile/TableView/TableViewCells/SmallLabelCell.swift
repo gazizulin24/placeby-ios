@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SmallLabelCell: UITableViewCell {
+final class SmallLabelCell: UITableViewCell {
     func configure(with text: String) {
         label.text = text
     }

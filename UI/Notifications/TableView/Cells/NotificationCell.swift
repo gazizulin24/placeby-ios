@@ -8,7 +8,7 @@
 import SnapKit
 import UIKit
 
-class NotificationCell: UITableViewCell {
+final class NotificationCell: UITableViewCell {
     func config(text: String, url: String) {
         notificaitonLabel.text = text
         notificationUrl = url

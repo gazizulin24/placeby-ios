@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RecentlyPlacesTableView: UITableView {
+final class RecentlyPlacesTableView: UITableView {
     // MARK: - Init
 
     override init(frame: CGRect, style: UITableView.Style) {

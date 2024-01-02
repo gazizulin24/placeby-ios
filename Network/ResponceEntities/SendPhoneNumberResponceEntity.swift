@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct SendPhoneNumberResponseEntity: Decodable {
+ struct SendPhoneNumberResponseEntity: Decodable {
     let status: Bool
 }

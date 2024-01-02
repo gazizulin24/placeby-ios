@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DistantionCalculator {
+final class DistantionCalculator {
     
     static let shared = DistantionCalculator()
     

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LoadingCell: UITableViewCell {
+final class LoadingCell: UITableViewCell {
     // MARK: - Public
 
     func reloadIndicator() {

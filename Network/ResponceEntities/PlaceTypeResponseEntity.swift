@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - PlaceTypeResponseEntity
 
-struct PlaceTypeResponseEntity: Codable {
+ struct PlaceTypeResponseEntity: Codable {
     let id: Int
     let name: String
 }

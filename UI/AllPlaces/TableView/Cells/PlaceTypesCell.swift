@@ -8,7 +8,7 @@
 import SnapKit
 import UIKit
 
-class PlaceTypesCell: UITableViewCell {
+final class PlaceTypesCell: UITableViewCell {
     // MARK: - Init
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

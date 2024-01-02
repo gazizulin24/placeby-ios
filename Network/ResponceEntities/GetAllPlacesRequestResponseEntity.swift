@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - GetAllPlacesRequestResponseSingleEntity
 
-struct GetAllPlacesRequestResponseSingleEntity: Codable {
+ struct GetAllPlacesRequestResponseSingleEntity: Codable {
     let id: Int
     let nameOfPlace, description: String
     let photos: [PlacePhotoResponseEntity]

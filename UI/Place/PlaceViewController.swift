@@ -227,15 +227,6 @@ private extension PlaceViewController {
         )
     }
 
-    func setImageByUrl(url: String) {
-        PhotosNetworkManager.loadPhoto(url: url) { [self] responseData in
-            if let data = responseData {
-                print(data)
-            } else {
-                print("не удалось загрузить фото")
-            }
-        }
-    }
 }
 
 // MARK: - UITableViewDataSource

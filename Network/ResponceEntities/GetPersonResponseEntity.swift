@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GetPersonResponseEntity: Decodable {
+ struct GetPersonResponseEntity: Decodable {
     let name: String
     let phoneNumber: String
     let dateOfBirth: String

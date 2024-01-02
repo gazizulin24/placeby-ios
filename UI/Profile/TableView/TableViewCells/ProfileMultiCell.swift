@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProfileMultiCell: UITableViewCell {
+final class ProfileMultiCell: UITableViewCell {
     func configure(with multiCell: ProfileTableViewCellTypeMultiCell) {
         if multiCell.count != 2 {
             print("error multicell cells count must be 2")

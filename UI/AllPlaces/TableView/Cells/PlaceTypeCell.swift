@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PlaceTypeCell: UICollectionViewCell {
+final class PlaceTypeCell: UICollectionViewCell {
     // MARK: - Public
 
     func configure(with data: PlaceType) {

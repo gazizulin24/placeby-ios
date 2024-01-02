@@ -9,13 +9,13 @@ import Foundation
 
 // MARK: - GetRecentlyPlacesResponseEntity
 
-struct GetRecentlyPlacesResponseEntity: Codable {
+ struct GetRecentlyPlacesResponseEntity: Codable {
     let recentlyPlaces: [RecentlyPlace]
 }
 
 // MARK: - RecentlyPlace
 
-struct RecentlyPlace: Codable {
+ struct RecentlyPlace: Codable {
     let id: Int
     let nameOfPlace, description: String
     let photos: [PlacePhotoResponseEntity]

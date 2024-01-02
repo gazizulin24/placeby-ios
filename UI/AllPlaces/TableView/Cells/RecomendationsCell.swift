@@ -8,7 +8,7 @@
 import SnapKit
 import UIKit
 
-class RecomendationsCell: UITableViewCell {
+final class RecomendationsCell: UITableViewCell {
     // MARK: - Public
 
     func configure() {}

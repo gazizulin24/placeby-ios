@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PlaceType {
+ struct PlaceType {
     let title: String
     let dbTitle: String
 

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RecentlyPlaceCell: UITableViewCell {
+final class RecentlyPlaceCell: UITableViewCell {
     // MARK: - Public
 
     func configure(with place: RecentlyPlaceData) {

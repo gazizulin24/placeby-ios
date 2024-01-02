@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct MakeRegistrationRequestResponseEntity: Decodable {
+ struct MakeRegistrationRequestResponseEntity: Decodable {
     let userId: Int
 }
