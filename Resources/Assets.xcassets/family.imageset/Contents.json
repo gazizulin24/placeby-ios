@@ -1,16 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "happy-family.png",
+      "filename" : "family.jpg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "family 1.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "happy-family 1.png",
+      "filename" : "family 2.jpg",
       "idiom" : "universal",
       "scale" : "3x"
     }

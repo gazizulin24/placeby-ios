@@ -29,7 +29,7 @@ final class SmallLabelCell: UITableViewCell {
 
     private enum UIConstants {
         static let labelFontSize: CGFloat = 12
-        static let labelHeight: CGFloat = 20
+        static let labelHeight: CGFloat = 30
     }
 
     // MARK: - Private properties
@@ -40,6 +40,7 @@ final class SmallLabelCell: UITableViewCell {
         label.font = .systemFont(ofSize: UIConstants.labelFontSize)
         label.textColor = .black
         label.textAlignment = .center
+        label.numberOfLines = 1
 
         return label
     }()
@@ -57,6 +58,7 @@ private extension SmallLabelCell {
             make.top.bottom.equalToSuperview().multipliedBy(0.9)
             make.centerX.equalToSuperview()
             make.height.equalTo(UIConstants.labelHeight)
+            make.width.equalToSuperview().multipliedBy(0.8)
         }
     }
 }

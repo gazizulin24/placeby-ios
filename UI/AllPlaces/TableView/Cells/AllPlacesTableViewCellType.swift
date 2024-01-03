@@ -12,6 +12,6 @@ enum AllPlacesTableViewCellType {
     case smallTitle(String)
     case place(GetAllPlacesRequestResponseSingleEntity)
     case placeTypes
-    case recomendations
+    case recomendations(RecomedationsData)
     case loading
 }

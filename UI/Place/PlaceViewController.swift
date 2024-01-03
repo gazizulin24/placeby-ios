@@ -33,7 +33,11 @@ final class PlaceViewController: UIViewController {
                 data.append(.description(place))
                 data.append(.map(place))
                 data.append(.categories(place))
+                data.append(.similar(place))
+                data.append(.report(place.nameOfPlace))
+                data.append(.smallLabel(""))
                 
+
                 
                 placeTableView.reloadData()
                 
@@ -95,34 +99,6 @@ final class PlaceViewController: UIViewController {
 
         return indicator
     }()
-    
-
-    private let placeMap: YMKMapView = {
-        let mapView = YMKMapView()
-
-        mapView.isUserInteractionEnabled = false
-
-        mapView.layer.cornerRadius = 15
-        mapView.clipsToBounds = true
-
-        return mapView
-    }()
-
-    private lazy var placeMapView: UIView = {
-        let view = UIView()
-
-        view.addSubview(placeMap)
-
-        placeMap.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.top.equalTo(view.snp.topMargin)
-            make.width.bottom.equalToSuperview()
-        }
-
-        return view
-    }()
-
-    
 
     private let placeLabel:UILabel = {
         let label = UILabel()
@@ -199,7 +175,10 @@ private extension PlaceViewController {
     }
 
     @objc func shareButtonPressed() {
-        let ac = UIActivityViewController(activityItems: [place.nameOfPlace], applicationActivities: nil)
+        
+        let text = "Зацени \(place.nameOfPlace) на placeby! \(place.photos.first!.photoURL)"
+        
+        let ac = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         
         present(ac, animated: true)
     }
@@ -235,25 +214,6 @@ private extension PlaceViewController {
         if navigationController?.viewControllers.count == 1 {
             navigationController?.navigationBar.isHidden = true
         }
-    }
-
-    @objc func tapToPlaceMapView() {
-        UserDefaults.standard.setValue(place.latitude, forKey: "placeToOpenLatitude")
-        UserDefaults.standard.setValue(place.longitude, forKey: "placeToOpenLongitude")
-        NotificationCenter.default.post(Notification(name: Notification.Name("openPlaceOnMap")))
-    }
-
-    func focusOnPlace(coordinates coord: PlaceCoordinates) {
-        placeMap.mapWindow.map.move(
-            with: YMKCameraPosition(
-                target: YMKPoint(latitude: coord.latitude, longitude: coord.longitude),
-                zoom: 17,
-                azimuth: 0,
-                tilt: 0
-            ),
-            animation: YMKAnimation(type: YMKAnimationType.smooth, duration: 1),
-            cameraCallback: nil
-        )
     }
 
 }
@@ -292,9 +252,26 @@ extension PlaceViewController:UITableViewDataSource {
             cell.configure(with: place)
             
             return cell
+        case .similar(let place):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SimilarPlacesCell.self), for: indexPath) as! SimilarPlacesCell
+            
+            cell.configure(with: place)
+            
+            return cell
+        case .report(let placeName):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ReportPlaceCell.self), for: indexPath) as! ReportPlaceCell
+            
+            cell.configure(with: placeName)
+            
+            return cell
+        case .smallLabel(let text):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SmallLabelCell.self), for: indexPath) as! SmallLabelCell
+            
+            cell.configure(with: text)
+            
+            return cell
         }
     }
-    
 }
 
 

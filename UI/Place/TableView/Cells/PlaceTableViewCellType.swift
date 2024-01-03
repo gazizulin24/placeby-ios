@@ -13,4 +13,7 @@ enum PlaceTableViewCellType {
     case description(GetAllPlacesRequestResponseSingleEntity)
     case categories(GetAllPlacesRequestResponseSingleEntity)
     case map(GetAllPlacesRequestResponseSingleEntity)
+    case similar(GetAllPlacesRequestResponseSingleEntity)
+    case report(String)
+    case smallLabel(String)
 }

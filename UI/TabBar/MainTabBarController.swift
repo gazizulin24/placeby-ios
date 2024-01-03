@@ -209,6 +209,7 @@ private extension MainTabBarController {
                 let placeLatitude = UserDefaults.standard.double(forKey: "placeToOpenLatitude")
                 let placeLongitude = UserDefaults.standard.double(forKey: "placeToOpenLongitude")
                 vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
+                vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
             }
         }
     }
@@ -233,6 +234,7 @@ private extension MainTabBarController {
             placeVC.configureWithId(placeId)
             
             vc.pushViewController(placeVC, animated: true)
+            vc.viewControllers = [vc.viewControllers.first!, vc.viewControllers.last!]
             
         }
     }

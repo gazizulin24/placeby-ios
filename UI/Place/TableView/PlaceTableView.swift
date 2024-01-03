@@ -35,5 +35,8 @@ private extension PlaceTableView {
         register(PlaceCategoriesCell.self, forCellReuseIdentifier: String(describing: PlaceCategoriesCell.self))
         register(PlaceDescriptionCell.self, forCellReuseIdentifier: String(describing: PlaceDescriptionCell.self))
         register(PlaceMapCell.self, forCellReuseIdentifier: String(describing: PlaceMapCell.self))
+        register(ReportPlaceCell.self, forCellReuseIdentifier: String(describing: ReportPlaceCell.self))
+        register(SimilarPlacesCell.self, forCellReuseIdentifier: String(describing: SimilarPlacesCell.self))
+        register(SmallLabelCell.self, forCellReuseIdentifier: String(describing: SmallLabelCell.self))
     }
 }

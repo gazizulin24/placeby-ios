@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "para.png",
+      "filename" : "znakovoe-mesto.jpg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "para 2.png",
+      "filename" : "znakovoe-mesto 1.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "para 1.png",
+      "filename" : "znakovoe-mesto 2.jpg",
       "idiom" : "universal",
       "scale" : "3x"
     }

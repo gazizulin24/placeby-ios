@@ -41,7 +41,7 @@ final class RecentlyPlacesHeaderCell: UITableViewCell {
 
         label.text = ""
         label.textColor = .black
-        label.font = .systemFont(ofSize: UIConstants.labelFontSize)
+        label.font = .systemFont(ofSize: UIConstants.labelFontSize, weight: .bold)
         label.textAlignment = .center
         return label
     }()
@@ -65,7 +65,8 @@ private extension RecentlyPlacesHeaderCell {
         contentView.addSubview(headerLabel)
 
         headerLabel.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
+            make.centerX.centerY.top.bottom.equalToSuperview()
+            make.height.equalTo(80)
         }
         
         contentView.addSubview(deleteRecentlyPlacesButton)

@@ -11,7 +11,17 @@ import UIKit
 final class RecomendationsCell: UITableViewCell {
     // MARK: - Public
 
-    func configure() {}
+    func configure(with recomendationsData:RecomedationsData) {
+        if recomendationsData.count != 3 { return }
+        
+        leftBigViewRecomendationsData = recomendationsData[0]
+        rightTopViewRecomendationsData = recomendationsData[1]
+        rightBottomViewRecomendationsData = recomendationsData[2]
+        
+        fillView(leftBigView, recomendationsData[0])
+        fillView(rightTopView, recomendationsData[1])
+        fillView(rightBottomView, recomendationsData[2])
+    }
 
     // MARK: - Init
 
@@ -31,10 +41,18 @@ final class RecomendationsCell: UITableViewCell {
         static let itemsViewHeight: CGFloat = 300
         static let itemViewCornerRadius: CGFloat = 10
         static let itemsInViewOffset: CGFloat = 10
+        static let labelFontSize: CGFloat = 15
+        static let labelCornerRadius: CGFloat = 10
+        static let labelHeight: CGFloat = 30
+        static let labelBottomInset: CGFloat = 7
     }
 
     // MARK: - Private properties
 
+    private var leftBigViewRecomendationsData:RecomendationsSingleData!
+    private var rightTopViewRecomendationsData:RecomendationsSingleData!
+    private var rightBottomViewRecomendationsData:RecomendationsSingleData!
+    
     private let itemsView: UIView = {
         let view = UIView()
         return view
@@ -45,19 +63,6 @@ final class RecomendationsCell: UITableViewCell {
 
         view.layer.cornerRadius = UIConstants.itemViewCornerRadius
 
-        let imageView = UIImageView()
-
-        imageView.image = UIImage(named: "dostop")
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = UIConstants.itemViewCornerRadius
-
-        view.addSubview(imageView)
-
-        imageView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
-        }
-
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(bigButtonAction)))
         return view
     }()
@@ -66,19 +71,6 @@ final class RecomendationsCell: UITableViewCell {
         let view = UIView()
 
         view.layer.cornerRadius = UIConstants.itemViewCornerRadius
-
-        let imageView = UIImageView()
-
-        imageView.image = UIImage(named: "para")
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = UIConstants.itemViewCornerRadius
-
-        view.addSubview(imageView)
-
-        imageView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
-        }
 
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(smallTopButtonAction)))
         return view
@@ -89,19 +81,6 @@ final class RecomendationsCell: UITableViewCell {
 
         view.backgroundColor = .gray
         view.layer.cornerRadius = UIConstants.itemViewCornerRadius
-
-        let imageView = UIImageView()
-
-        imageView.image = UIImage(named: "happy-family")
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = UIConstants.itemViewCornerRadius
-
-        view.addSubview(imageView)
-
-        imageView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
-        }
 
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(smallBottomButtonAction)))
         return view
@@ -149,22 +128,60 @@ private extension RecomendationsCell {
             make.leading.equalTo(contentView.snp.centerX).offset(UIConstants.itemsInViewOffset)
         }
     }
+    
+    
+    
+    func fillView(_ view:UIView, _ data: RecomendationsSingleData) {
+        let imageView = UIImageView()
+
+        imageView.image = UIImage(named: data.imageName)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = UIConstants.itemViewCornerRadius
+
+        view.addSubview(imageView)
+
+        imageView.snp.makeConstraints { make in
+            make.size.equalToSuperview()
+        }
+        
+        let label = UILabel()
+        
+        label.font = .systemFont(ofSize: UIConstants.labelFontSize, weight: .bold)
+        label.backgroundColor = .white
+        label.textAlignment = .center
+        label.textColor = .black
+        label.layer.cornerRadius = UIConstants.labelCornerRadius
+        label.text = data.title
+        label.clipsToBounds = true
+        
+        view.addSubview(label)
+        
+        label.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().inset(UIConstants.labelBottomInset)
+            make.width.equalToSuperview().multipliedBy(0.9)
+            make.height.equalTo(UIConstants.labelHeight)
+        }
+        
+    }
+    
 
     @objc func bigButtonAction() {
         print("bigButtonAction")
-        PlaceType.savePlaceTypeToUserDefaults(placeType: PlaceType(title: "Знаковые места", dbTitle: "attracitons"))
+        PlaceType.savePlaceTypeToUserDefaults(placeType: PlaceType(title: leftBigViewRecomendationsData.title, dbTitle: leftBigViewRecomendationsData.placesType))
         NotificationCenter.default.post(name: Notification.Name("allPlacesFilterTypeChanged"), object: nil)
     }
 
     @objc func smallTopButtonAction() {
         print("smallTopButtonAction")
-        PlaceType.savePlaceTypeToUserDefaults(placeType: PlaceType(title: "Парой", dbTitle: "pair"))
+        PlaceType.savePlaceTypeToUserDefaults(placeType: PlaceType(title: rightTopViewRecomendationsData.title, dbTitle: rightTopViewRecomendationsData.placesType))
         NotificationCenter.default.post(name: Notification.Name("allPlacesFilterTypeChanged"), object: nil)
     }
 
     @objc func smallBottomButtonAction() {
         print("smallBottomButtonAction")
-        PlaceType.savePlaceTypeToUserDefaults(placeType: PlaceType(title: "Семьей", dbTitle: "family"))
+        PlaceType.savePlaceTypeToUserDefaults(placeType: PlaceType(title: rightBottomViewRecomendationsData.title, dbTitle: rightBottomViewRecomendationsData.placesType))
         NotificationCenter.default.post(name: Notification.Name("allPlacesFilterTypeChanged"), object: nil)
     }
 }

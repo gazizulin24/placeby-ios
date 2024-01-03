@@ -23,6 +23,7 @@ final class PlacesNetworkManager {
     static func getAllPlacesByTypeRequest(_ type: String, completion: @escaping (GetAllPlacesRequestResponseEntity?) -> Void) {
         let url = Endpoints.getAllPlacesByTypeEndpoint + type
         AF.request(url, method: .get, encoding: JSONEncoding.default).responseDecodable(of: GetAllPlacesRequestResponseEntity.self) { response in
+            
             completion(response.value)
         }
     }

@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "mrk.jpeg",
+      "filename" : "pair.jpg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "mrk 1.jpeg",
+      "filename" : "pair 1.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "mrk 2.jpeg",
+      "filename" : "pair 2.jpg",
       "idiom" : "universal",
       "scale" : "3x"
     }
