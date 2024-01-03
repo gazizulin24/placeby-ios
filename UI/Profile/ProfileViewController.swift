@@ -96,8 +96,8 @@ private extension ProfileViewController {
                 self.endLoading()
             } else {
                 print("ошибка makeGetPersonRequest")
-                self.user = User(phoneNum: "333496508", name: "Егор", birthday: "2007-09-12", sex: "male")
-                self.endLoading()
+//                self.user = User(phoneNum: "333496508", name: "Егор", birthday: "2007-09-12", sex: "male")
+//                self.endLoading()
             }
         }
     }
