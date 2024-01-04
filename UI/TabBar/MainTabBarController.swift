@@ -206,8 +206,11 @@ private extension MainTabBarController {
     }
 
     @objc func openFeedback() {
-        if let url = URL(string: "https://youtu.be/dQw4w9WgXcQ?si=dzF_cgAxz2dXJ12D") {
-            UIApplication.shared.open(url)
+        selectedIndex = 4
+        
+        
+        if let viewController = viewControllers?.last! as? UINavigationController {
+            viewController.pushViewController(FeedbackViewController(), animated: true)
         }
     }
 
@@ -235,7 +238,6 @@ private extension MainTabBarController {
     }
 
     @objc func openNotificationsPage() {
-        print("openNotificationsPage")
         selectedIndex = viewControllers!.count - 1
 
         if let viewController = viewControllers?.last! as? UINavigationController {
