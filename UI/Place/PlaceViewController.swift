@@ -32,6 +32,7 @@ final class PlaceViewController: UIViewController {
                 data.append(.images(place.photos))
                 data.append(.description(place))
                 data.append(.map(place))
+                data.append(.schedule(place))
                 data.append(.categories(place))
                 data.append(.similar(place))
                 data.append(.report(place.nameOfPlace))
@@ -268,6 +269,12 @@ extension PlaceViewController:UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SmallLabelCell.self), for: indexPath) as! SmallLabelCell
             
             cell.configure(with: text)
+            
+            return cell
+        case .schedule(let place):
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceScheduleCell.self), for: indexPath) as! PlaceScheduleCell
+            
+            cell.configure(with: place)
             
             return cell
         }

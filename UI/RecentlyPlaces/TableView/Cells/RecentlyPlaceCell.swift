@@ -57,6 +57,8 @@ final class RecentlyPlaceCell: UITableViewCell {
         label.font = .systemFont(ofSize: 20, weight: .bold)
         label.textColor = .black
         label.text = "МРК"
+        label.numberOfLines = 2
+        label.adjustsFontSizeToFitWidth = true
         label.textAlignment = .center
         return label
     }()

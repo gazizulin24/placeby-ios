@@ -16,4 +16,5 @@ enum PlaceTableViewCellType {
     case similar(GetAllPlacesRequestResponseSingleEntity)
     case report(String)
     case smallLabel(String)
+    case schedule(GetAllPlacesRequestResponseSingleEntity)
 }

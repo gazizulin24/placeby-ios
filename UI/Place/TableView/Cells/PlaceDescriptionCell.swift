@@ -33,7 +33,8 @@ final class PlaceDescriptionCell: UITableViewCell {
         static let rateLabelFontSize:CGFloat = 20
         static let titleLabelLeadingOffset:CGFloat = 10
         static let descriptionLabelFontSize:CGFloat = 20
-        static let descriptionLabelHeight:CGFloat = 50
+        static let descriptionLabelHeight:CGFloat = 100
+        static let descriptionLabelTopOffset:CGFloat = 10
         static let titleLabelHeight:CGFloat = 50
         
     }
@@ -46,6 +47,8 @@ final class PlaceDescriptionCell: UITableViewCell {
         label.font = .systemFont(ofSize: UIConstants.titleLabelFontSize, weight: .bold)
         label.textAlignment = .left
         label.textColor = .black
+        label.numberOfLines = 2
+        label.adjustsFontSizeToFitWidth = true
         
         return label
     }()
@@ -53,7 +56,7 @@ final class PlaceDescriptionCell: UITableViewCell {
     private let descriptionLabel:UILabel = {
         let label = UILabel()
         
-        label.numberOfLines = 2
+        label.numberOfLines = 10
         label.adjustsFontSizeToFitWidth = true
         label.font = .systemFont(ofSize: UIConstants.descriptionLabelFontSize, weight: .bold)
         label.textAlignment = .left
@@ -101,7 +104,7 @@ private extension PlaceDescriptionCell {
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview().offset(UIConstants.titleLabelLeadingOffset)
-            make.width.equalToSuperview().multipliedBy(0.75)
+            make.width.equalToSuperview().multipliedBy(0.70)
             make.height.equalTo(UIConstants.titleLabelHeight)
         }
         
@@ -110,7 +113,7 @@ private extension PlaceDescriptionCell {
         descriptionLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(UIConstants.titleLabelLeadingOffset)
             make.width.equalToSuperview().multipliedBy(0.9)
-            make.top.equalTo(titleLabel.snp.bottom)
+            make.top.equalTo(titleLabel.snp.bottom).offset(UIConstants.descriptionLabelTopOffset)
             make.height.equalTo(UIConstants.descriptionLabelHeight)
             make.bottom.equalToSuperview()
         }
