@@ -216,6 +216,10 @@ private extension PlaceViewController {
             navigationController?.navigationBar.isHidden = true
         }
     }
+    
+    @objc func openSchedule(){
+        NotificationCenter.default.post(Notification(name: Notification.Name("openSchedule")))
+    }
 
 }
 
@@ -276,6 +280,8 @@ extension PlaceViewController:UITableViewDataSource {
             
             cell.configure(with: place)
             
+            
+            cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openSchedule)))
             return cell
         }
     }

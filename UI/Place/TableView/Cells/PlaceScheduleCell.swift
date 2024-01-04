@@ -13,7 +13,7 @@ final class PlaceScheduleCell: UITableViewCell {
     func configure(with place: GetAllPlacesRequestResponseSingleEntity){
         print(place)
         
-        let isOpen = true
+        let isOpen = false
         let timeOpen = "8.00"
         let timeClose = "22.00"
         
@@ -48,7 +48,7 @@ final class PlaceScheduleCell: UITableViewCell {
         static let schedulePlacesLabelFontSize:CGFloat = 20
         static let leadingOffset:CGFloat = 10
         static let topOffset:CGFloat = 10
-        static let scheduleViewHeight:CGFloat = 50
+        static let scheduleViewHeight:CGFloat = 20
         static let scheduleViewLabelsFontSize:CGFloat = 20
     }
     
@@ -114,7 +114,7 @@ private extension PlaceScheduleCell {
         contentView.addSubview(scheduleView)
         
         scheduleView.snp.makeConstraints { make in
-            make.top.equalTo(scheduleLabel.snp.bottom)
+            make.top.equalTo(scheduleLabel.snp.bottom).offset(UIConstants.topOffset)
             make.height.equalTo(UIConstants.scheduleViewHeight)
             make.width.equalToSuperview().multipliedBy(0.9)
             make.centerX.equalToSuperview()
@@ -134,5 +134,10 @@ private extension PlaceScheduleCell {
             make.centerY.trailing.height.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.5)
         }
+        
+    }
+    
+    @objc func openSchedule(){
+        print("open")
     }
 }

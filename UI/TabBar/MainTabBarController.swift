@@ -14,6 +14,28 @@ final class MainTabBarController: UITabBarController {
     private let mainTabBar = MainTabBar()
     private let locationManager = CLLocationManager()
     private var prevSelectedIndex = 0
+    private let dimView:UIView = {
+        let view = UIView(frame: UIScreen.main.bounds)
+        
+        view.backgroundColor = .black
+        view.alpha = 0
+        
+        return view
+    }()
+    private let scheduleView:ScheduleView = {
+        let view = ScheduleView()
+        
+        view.alpha = 0
+        
+        return view
+    }()
+    
+    // MARK: - Private constants
+    
+    private enum UIConstants {
+        static let scheduleViewHeight:CGFloat = 310
+        static let scheduleViewWidth:CGFloat = 300
+    }
 
     // MARK: - View Lifecycle
 
@@ -50,6 +72,7 @@ private extension MainTabBarController {
         setupNotifications()
 
         viewControllers = getViewControllers()
+        
     }
 
     func getViewControllers() -> [UIViewController] {
@@ -144,6 +167,42 @@ private extension MainTabBarController {
         NotificationCenter.default.addObserver(self, selector: #selector(openProfileSettingsPage), name: Notification.Name("openProfileSettingsPage"), object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(openFeedback), name: Notification.Name("openFeedback"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(openSchedule), name: Notification.Name("openSchedule"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(closeSchedule), name: Notification.Name("closeSchedule"), object: nil)
+    }
+    
+    @objc func openSchedule(){
+        view.addSubview(dimView)
+        dimView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(closeSchedule)))
+        
+        
+        let placeId = UserDefaults.standard.integer(forKey: "placeId")
+        print(placeId) // Потом тут будет запрос на получение по айди места его расписания
+        scheduleView.configure()
+        
+        
+        
+        view.addSubview(scheduleView)
+        scheduleView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(UIConstants.scheduleViewWidth)
+            make.height.equalTo(UIConstants.scheduleViewHeight)
+        }
+        UIView.animate(withDuration: 0.3) {
+            self.dimView.alpha = 0.5
+            self.scheduleView.alpha = 1
+        }
+    }
+    
+    @objc func closeSchedule(){
+        UIView.animate(withDuration: 0.3) {
+            self.dimView.alpha = 0
+            self.dimView.removeFromSuperview()
+            self.scheduleView.alpha = 0
+            self.scheduleView.removeFromSuperview()
+        }
     }
 
     @objc func openFeedback() {
