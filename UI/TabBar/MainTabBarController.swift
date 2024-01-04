@@ -210,7 +210,12 @@ private extension MainTabBarController {
         
         
         if let viewController = viewControllers?.last! as? UINavigationController {
-            viewController.pushViewController(FeedbackViewController(), animated: true)
+            let vc = FeedbackViewController()
+            if let placeName = UserDefaults.standard.string(forKey: "placeNameToReport"){
+                vc.reportPlaceName(placeName: placeName)
+                UserDefaults.standard.removeObject(forKey: "placeNameToReport")
+            }
+            viewController.pushViewController(vc, animated: true)
         }
     }
 

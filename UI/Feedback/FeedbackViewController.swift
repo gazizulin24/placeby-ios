@@ -9,6 +9,11 @@ import UIKit
 import SnapKit
 
 final class FeedbackViewController: UIViewController {
+    
+    func reportPlaceName(placeName:String){
+        messageTextField.text = "Я хочу пожаловаться на \(placeName): "
+        messageTextField.becomeFirstResponder()
+    }
 
     
     // MARK: - Lifecycle
@@ -113,7 +118,7 @@ final class FeedbackViewController: UIViewController {
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 1))
         textField.leftViewMode = .always
 
-        textField.font = .systemFont(ofSize: 17)
+        textField.font = .systemFont(ofSize: 11)
         textField.textAlignment = .left
         textField.backgroundColor = .white
         textField.textColor = .black

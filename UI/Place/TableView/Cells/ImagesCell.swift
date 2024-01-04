@@ -16,7 +16,9 @@ final class ImagesCell: UITableViewCell {
         imagesScrollView.addImages(images: images)
         
         countOfPages = images.count
-        createDotsInDotsView(count: countOfPages, selectedDot: 0)
+        
+        createDotsInDotsView(count: countOfPages)
+
     }
 
     // MARK: - Init
@@ -84,9 +86,11 @@ private extension ImagesCell {
         
     }
     
-    func createDotsInDotsView(count:Int, selectedDot:Int){
+    func createDotsInDotsView(count:Int){
         let view = UIView()
         view.backgroundColor = .white
+        
+        let currentPageDoubleOrNan = imagesScrollView.contentOffset.x / imagesScrollView.bounds.width
         
         if let prevView = view.subviews.last {
             prevView.removeFromSuperview()
@@ -112,9 +116,10 @@ private extension ImagesCell {
             
             dot.layer.cornerRadius = Double(UIConstants.dotSize)/2
             
-            
-            if i == selectedDot {
-                dot.backgroundColor = .darkGray
+            if !currentPageDoubleOrNan.isNaN{
+                if i == Int(currentPageDoubleOrNan) {
+                    dot.backgroundColor = .darkGray
+                }
             }
             view.addSubview(dot)
             
@@ -157,12 +162,6 @@ private extension ImagesCell {
 extension ImagesCell: UIScrollViewDelegate {
     
         func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-            let currentPage = Int(scrollView.contentOffset.x / scrollView.bounds.width)
-            
-            
-            
-            print(currentPage)
-            print(countOfPages)
-            createDotsInDotsView(count: countOfPages, selectedDot: currentPage)
+            createDotsInDotsView(count: countOfPages)
         }
 }

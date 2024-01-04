@@ -108,7 +108,7 @@ private extension ReportPlaceCell {
     }
     
     @objc func tapReportButton(){
-        print("report \(placeName)!")
+        UserDefaults.standard.setValue(placeName, forKey: "placeNameToReport")
         NotificationCenter.default.post(name: Notification.Name("openFeedback"), object: nil)
     }
 }
