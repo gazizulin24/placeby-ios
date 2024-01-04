@@ -43,6 +43,7 @@ final class SimilarPlacesCell: UITableViewCell {
         static let cellWidth:CGFloat = 250
         static let cellHeight:CGFloat = 180
         static let collectionViewHeight:CGFloat = 180
+        static let similarPlacesLabelHeight:CGFloat = 25
     }
     
     // MARK: - Private properties
@@ -74,6 +75,17 @@ final class SimilarPlacesCell: UITableViewCell {
         return collectionView
     }()
     
+    lazy private var moreButton:UIButton = {
+        let button = UIButton()
+        
+        button.addTarget(self, action: #selector(moreSimilar), for: .touchUpInside)
+        button.setImage(UIImage(systemName: "ellipsis")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+        
+        
+        return button
+        
+    }()
+    
 }
 
 // MARK: - Private methods
@@ -86,6 +98,15 @@ private extension SimilarPlacesCell {
         similarPlacesLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(UIConstants.similarOffset)
             make.top.equalToSuperview().offset(UIConstants.similarLabelTopOffset)
+            make.height.equalTo(UIConstants.similarPlacesLabelHeight)
+        }
+        
+        contentView.addSubview(moreButton)
+        
+        moreButton.snp.makeConstraints{ make in
+            make.trailing.equalToSuperview().inset(UIConstants.similarOffset*2)
+            make.top.equalToSuperview().offset(UIConstants.similarLabelTopOffset)
+            make.size.equalTo(UIConstants.similarPlacesLabelHeight)
         }
         
         contentView.addSubview(collectionView)
@@ -104,6 +125,17 @@ private extension SimilarPlacesCell {
         UserDefaults.standard.setValue(cell.placeId, forKey: "placeId")
         print("tap")
         NotificationCenter.default.post(Notification(name: Notification.Name("findPlace")))
+    }
+    
+    @objc func moreSimilar(){
+        print("moreSimilar")
+        if let tableView = superview as? UITableView,
+           let viewController = tableView.delegate as? PlaceViewController {
+            let vc = SimilarPlacesViewController()
+            
+            vc.configure(with: similarPlaces)
+            viewController.navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 

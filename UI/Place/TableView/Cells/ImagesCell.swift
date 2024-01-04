@@ -120,6 +120,8 @@ private extension ImagesCell {
                 if i == Int(currentPageDoubleOrNan) {
                     dot.backgroundColor = .darkGray
                 }
+            } else if i == 0 {
+                dot.backgroundColor = .darkGray
             }
             view.addSubview(dot)
             
