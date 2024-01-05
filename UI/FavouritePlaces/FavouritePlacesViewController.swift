@@ -92,6 +92,10 @@ private extension FavouritePlacesViewController {
 
     @objc func back() {
         navigationController?.popViewController(animated: true)
+        if navigationController?.viewControllers.count == 1 {
+            navigationController?.isNavigationBarHidden = true
+            navigationController?.navigationBar.isHidden = true
+        }
     }
     
     @objc func openPlace(_ sender:UITapGestureRecognizer){

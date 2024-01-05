@@ -223,6 +223,10 @@ private extension MainTabBarController {
         print("openProfileSettingsPage")
         selectedIndex = viewControllers!.count - 1
         prevSelectedIndex = selectedIndex
+        
+        if let viewController = viewControllers?.last! as? UINavigationController {
+            viewController.pushViewController(ProfileSettingsViewController(), animated: true)
+        }
     }
 
     @objc func openLikedPlaces() {

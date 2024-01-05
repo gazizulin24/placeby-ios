@@ -93,6 +93,8 @@ private extension ProfileViewController {
                                  name: response.name,
                                  birthday: response.dateOfBirth,
                                  sex: response.gender)
+                UserDefaults.standard.setValue(response.name, forKey: "username")
+                UserDefaults.standard.setValue(response.gender, forKey: "userGender")
                 self.endLoading()
             } else {
                 print("ошибка makeGetPersonRequest")
