@@ -120,6 +120,8 @@ private extension PlaceDescriptionCell {
         
         contentView.addSubview(rateView)
         
+        rateView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ratePlace)))
+        
         rateView.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(UIConstants.titleLabelLeadingOffset)
             make.top.equalToSuperview()
@@ -141,6 +143,10 @@ private extension PlaceDescriptionCell {
             make.width.equalToSuperview().multipliedBy(0.5)
             
         }
+    }
+    
+    @objc func ratePlace(){
+        NotificationCenter.default.post(Notification(name: Notification.Name("ratePlace")))
     }
     
 }

@@ -9,8 +9,12 @@ import CoreLocation
 import UIKit
 
 final class MainTabBarController: UITabBarController {
+    
     // MARK: - Private properties
 
+    lazy private var closeScheduleGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(closeSchedule))
+    lazy private var closeRateViewGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(closeRateView))
+    
     private let mainTabBar = MainTabBar()
     private let locationManager = CLLocationManager()
     private var prevSelectedIndex = 0
@@ -22,6 +26,14 @@ final class MainTabBarController: UITabBarController {
         
         return view
     }()
+    private let ratingView:RatingView = {
+        let view = RatingView()
+        
+        view.alpha = 0
+        
+        return view
+    }()
+    
     private let scheduleView:ScheduleView = {
         let view = ScheduleView()
         
@@ -35,6 +47,8 @@ final class MainTabBarController: UITabBarController {
     private enum UIConstants {
         static let scheduleViewHeight:CGFloat = 310
         static let scheduleViewWidth:CGFloat = 300
+        static let ratingViewHeight:CGFloat = 160
+        static let ratingViewWidth:CGFloat = 300
     }
 
     // MARK: - View Lifecycle
@@ -171,11 +185,58 @@ private extension MainTabBarController {
         NotificationCenter.default.addObserver(self, selector: #selector(openSchedule), name: Notification.Name("openSchedule"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(closeSchedule), name: Notification.Name("closeSchedule"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ratePlace), name: Notification.Name("ratePlace"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(sentRating(_:)), name: Notification.Name("sendRatePlace"), object: nil)
+    }
+    
+    @objc func ratePlace(){
+        
+        dimView.addGestureRecognizer(closeRateViewGestureRecognizer)
+        
+        view.addSubview(dimView)
+        
+        view.addSubview(ratingView)
+        ratingView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(UIConstants.ratingViewWidth)
+            make.height.equalTo(UIConstants.ratingViewHeight)
+        }
+        
+        UIView.animate(withDuration: 0.3) {
+            self.dimView.alpha = 0.3
+            self.ratingView.alpha = 1
+        }
+        
+    }
+    
+    @objc func sentRating(_ sender:Notification){
+        let placeId = UserDefaults.standard.integer(forKey: "placeId")
+        if let rating = sender.object {
+            print("user rated place \(placeId): ", rating)
+            
+            // тут будет логика того как мы обработаем уже оценочку
+            
+        }
+        
+        closeRateView()
+    }
+    
+    @objc func closeRateView(){
+        UIView.animate(withDuration: 0.3) {
+            self.dimView.alpha = 0
+            self.dimView.removeFromSuperview()
+            self.ratingView.alpha = 0
+            self.ratingView.removeFromSuperview()
+        }
+        dimView.removeGestureRecognizer(closeRateViewGestureRecognizer)
+        
     }
     
     @objc func openSchedule(){
         view.addSubview(dimView)
-        dimView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(closeSchedule)))
+        dimView.addGestureRecognizer(closeScheduleGestureRecognizer)
         
         
         let placeId = UserDefaults.standard.integer(forKey: "placeId")
@@ -191,7 +252,7 @@ private extension MainTabBarController {
             make.height.equalTo(UIConstants.scheduleViewHeight)
         }
         UIView.animate(withDuration: 0.3) {
-            self.dimView.alpha = 0.5
+            self.dimView.alpha = 0.3
             self.scheduleView.alpha = 1
         }
     }
@@ -203,6 +264,7 @@ private extension MainTabBarController {
             self.scheduleView.alpha = 0
             self.scheduleView.removeFromSuperview()
         }
+        dimView.removeGestureRecognizer(closeScheduleGestureRecognizer)
     }
 
     @objc func openFeedback() {
