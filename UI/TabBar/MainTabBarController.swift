@@ -241,9 +241,9 @@ private extension MainTabBarController {
         print("openSettingsPage")
         selectedIndex = viewControllers!.count - 1
         prevSelectedIndex = selectedIndex
-//        if let viewController = viewControllers?.last! as? UINavigationController {
-//            //viewController.pushViewController(UIViewController(), animated: true)
-//        }
+        if let viewController = viewControllers?.last! as? UINavigationController {
+            viewController.pushViewController(GlobalSettingsViewController(), animated: true)
+        }
     }
 
     @objc func openNotificationsPage() {
@@ -261,9 +261,9 @@ private extension MainTabBarController {
 
         alert.addAction(UIAlertAction(title: "Да", style: .destructive, handler: { _ in
             print("logout")
-            //        UserDefaults.standard.setValue(false, forKey: "isLogged")
-            //        UserDefaults.standard.setValue(-1, forKey: "userId")
-            //        self.navigationController?.setViewControllers([EnterPhoneNumViewController()], animated: true)
+                    UserDefaults.standard.setValue(false, forKey: "isLogged")
+                    UserDefaults.standard.setValue(-1, forKey: "userId")
+                    self.navigationController?.setViewControllers([EnterPhoneNumViewController()], animated: true)
         }))
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: { _ in
             print("cancel logout")

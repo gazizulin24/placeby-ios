@@ -159,7 +159,7 @@ private extension ProfileSettingsViewController {
 
         
         alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: { [self] _ in
-            navigationController?.popViewController(animated: true)
+            back()
         }))
         present(alert, animated: true, completion: nil)
     }
