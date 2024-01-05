@@ -222,21 +222,21 @@ private extension MainTabBarController {
     @objc func openProfileSettingsPage() {
         print("openProfileSettingsPage")
         selectedIndex = viewControllers!.count - 1
+        prevSelectedIndex = selectedIndex
     }
 
     @objc func openLikedPlaces() {
-        print("openLikedPlaces")
         selectedIndex = viewControllers!.count - 1
-
-//        if let viewController = viewControllers?.last! as? UINavigationController {
-//            //viewController.pushViewController(UIViewController(), animated: true)
-//        }
+        prevSelectedIndex = selectedIndex
+        if let viewController = viewControllers?.last! as? UINavigationController {
+            viewController.pushViewController(FavouritePlacesViewController(), animated: true)
+        }
     }
 
     @objc func openSettingsPage() {
         print("openSettingsPage")
         selectedIndex = viewControllers!.count - 1
-
+        prevSelectedIndex = selectedIndex
 //        if let viewController = viewControllers?.last! as? UINavigationController {
 //            //viewController.pushViewController(UIViewController(), animated: true)
 //        }
@@ -244,7 +244,7 @@ private extension MainTabBarController {
 
     @objc func openNotificationsPage() {
         selectedIndex = viewControllers!.count - 1
-
+        prevSelectedIndex = selectedIndex
         if let viewController = viewControllers?.last! as? UINavigationController {
             viewController.pushViewController(NotificationsViewController(), animated: true)
         }
@@ -269,15 +269,15 @@ private extension MainTabBarController {
 
     @objc func openPlaceOnMap() {
         selectedIndex = 1
+        prevSelectedIndex = selectedIndex
 
-        if let nc = viewControllers![1] as? UINavigationController {
-            if let vc = nc.viewControllers.first! as? PlacesMapViewController {
+        if let nc = viewControllers![1] as? UINavigationController,
+           let vc = nc.viewControllers.first! as? PlacesMapViewController {
                 let placeLatitude = UserDefaults.standard.double(forKey: "placeToOpenLatitude")
                 let placeLongitude = UserDefaults.standard.double(forKey: "placeToOpenLongitude")
                 vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
                 vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
             }
-        }
     }
 
     @objc func findPlaceButtonPressed() {
@@ -288,6 +288,7 @@ private extension MainTabBarController {
 
     @objc func findPlace() {
         selectedIndex = 0
+        prevSelectedIndex = selectedIndex
 
         let userId = UserDefaults.standard.integer(forKey: "userId")
         let placeId = UserDefaults.standard.integer(forKey: "placeId")

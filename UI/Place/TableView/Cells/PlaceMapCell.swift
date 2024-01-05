@@ -113,15 +113,5 @@ private extension PlaceMapCell {
         UserDefaults.standard.setValue(placeCoordinates.longitude, forKey: "placeToOpenLongitude")
         NotificationCenter.default.post(Notification(name: Notification.Name("openPlaceOnMap")))
         
-        var parentResponder: UIResponder? = self
-                
-        while parentResponder != nil {
-            parentResponder = parentResponder?.next
-                    
-            if let viewController = parentResponder as? PlaceViewController {
-                viewController.navigationController?.popViewController(animated: true)
-                break
-            }
-        }
     }
 }

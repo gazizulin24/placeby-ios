@@ -153,7 +153,7 @@ private extension PlaceViewController {
                 setLikedButton(response.isFavourite)
             } else{
                 print("error isPlaceIsFavouriteForUser")
-                setLikedButton(true)
+                setLikedButton(false)
             }
             
         }
@@ -202,11 +202,23 @@ private extension PlaceViewController {
     }
 
     @objc func likeButtonTapped(_ sender: UIBarButtonItem) {
-        isLiked.toggle()
+        let userId = UserDefaults.standard.integer(forKey: "userId")
         if isLiked {
-            sender.image = ImageConstants.likedImage
-        } else {
+            FavouritePlacesNetworkManager.deleteFavouritePlaceForUser(placeId: place.id, personId: userId)
             sender.image = ImageConstants.unlikedImage
+            isLiked = false
+        } else {
+            FavouritePlacesNetworkManager.makePlaceFavouriteForPerson(placeId: place.id, personId: userId)
+            sender.image = ImageConstants.likedImage
+            isLiked = true
+            
+            let alert = UIAlertController(title: "Место добавлено в любимые!", message: "Хотите перейти ко всем любимым местам?", preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: "Перейти", style: .default, handler: { _ in
+                NotificationCenter.default.post(name: Notification.Name("openLikedPlaces"), object: nil)
+            }))
+            alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel))
+            present(alert, animated: true, completion: nil)
         }
     }
 
