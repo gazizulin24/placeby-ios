@@ -148,14 +148,18 @@ private extension RatingView {
                 star.image = UIImage(systemName: "star")?.withTintColor(.gray, renderingMode: .alwaysOriginal)
             }
         }
-        
         placeRating = starId + 1
         
     }
     
     @objc func ratePlace(){
+        
         if placeRating != 0 {
             NotificationCenter.default.post(name: Notification.Name("sendRatePlace"), object: placeRating)
+        }
+        
+        for star in starButtons {
+            star.image = UIImage(systemName: "star")?.withTintColor(.gray, renderingMode: .alwaysOriginal)
         }
     }
 }
