@@ -38,19 +38,13 @@ final class PlacesMapViewController: UIViewController {
 
         initialization()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        hideBottomView()
-        focusOn(coordinates: belarusCoordinates, zoom:6)
-        createAllPlacesPlacemarks(map: mapView.mapWindow.map)
-    }
 
     // MARK: - Private constants
 
     private var place = GetAllPlacesRequestResponseSingleEntity(id: 0, nameOfPlace: "", description: "", photos: [], longitude: 0, latitude: 0, types: [])
 
     private let belarusCoordinates = PlaceCoordinates(latitude: 53.902735, longitude: 27.555691)
+    private var placemarks:[YMKMapObject] = []
 
     private enum UIConstants {
         static let meButtonSize: CGFloat = 50
@@ -97,7 +91,8 @@ private extension PlacesMapViewController {
             make.height.equalTo(UIConstants.bottomViewHeight)
         }
         
-       
+        focusOn(coordinates: belarusCoordinates, zoom:6)
+        createAllPlacesPlacemarks(map: mapView.mapWindow.map)
     }
 
     @objc func focusOnUserLocation() {
@@ -121,13 +116,18 @@ private extension PlacesMapViewController {
         switch type{
         case .all:
             focusOn(coordinates: belarusCoordinates, zoom: 6)
-//            mapView.mapWindow.map.mapObjects.addPlace()
+            createAllPlacesPlacemarks(map: mapView.mapWindow.map)
         case .nearby:
-            print(type)
+            focusOnUserLocation()
+            createPlacesNearbyPlacemarks(map: mapView.mapWindow.map)
         case .recently:
-            print(type)
+            focusOn(coordinates: belarusCoordinates, zoom: 6)
+            removeAllPlacemarks(map: mapView.mapWindow.map)
+            createRecentlyPlacesPlacemarks(map: mapView.mapWindow.map)
         case .favourite:
-            print(type)
+            focusOn(coordinates: belarusCoordinates, zoom: 6)
+            removeAllPlacemarks(map: mapView.mapWindow.map)
+            createFavouritePlacesPlacemarks(map: mapView.mapWindow.map)
         }
     }
 
@@ -142,12 +142,102 @@ private extension PlacesMapViewController {
         // Устанавливаем новые координаты для существующего userPlacemark
         userPlacemark.geometry = newCoordinate
     }
+    
+    func removeAllPlacemarks(map:YMKMap){
+        for placemark in placemarks {
+            map.mapObjects.remove(with: placemark)
+        }
+        placemarks = []
+    }
+    
+    func createRecentlyPlacesPlacemarks(map: YMKMap){
+        let userId = UserDefaults.standard.integer(forKey: "userId")
+        RecentlyPlacesNetworkManager.makeGetRecentlyPlacesForPersonWithIdRequest(id: userId) { [self] responseEntity in
+            if let places = responseEntity {
+                if !(places.recentlyPlaces.count == 0){
+                    removeAllPlacemarks(map: map)
+                    for place in places.recentlyPlaces {
+                        addPlacemark(map, place)
+                    }
+                } else{
+                    let alert = UIAlertController(title: "Нет недавних", message: "Не хотите перейти в каталог мест и посмотреть несколько мест там?", preferredStyle: .alert)
+
+                    alert.addAction(UIAlertAction(title: "Перейти", style: .default, handler: { _ in
+                        NotificationCenter.default.post(name: Notification.Name("openAllPlaces"), object: nil)
+                    }))
+                    alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: nil))
+                    
+                    present(alert, animated: true, completion: nil)
+                }
+            }
+        }
+    }
+    
+    func createFavouritePlacesPlacemarks(map: YMKMap){
+        let userId = UserDefaults.standard.integer(forKey: "userId")
+        FavouritePlacesNetworkManager.getFavouritePlacesForUser(id: userId) { [self] responseEntity in
+            if let places = responseEntity{
+                if !(places.favPlaces.count == 0){
+                    removeAllPlacemarks(map: map)
+                    for place in places.favPlaces {
+                        addPlacemark(map, place)
+                    }
+                } else{
+                    let alert = UIAlertController(title: "Нет любимых", message: "Не хотите перейти в каталог мест и найти любимые там?", preferredStyle: .alert)
+
+                    alert.addAction(UIAlertAction(title: "Перейти", style: .default, handler: { _ in
+                        NotificationCenter.default.post(name: Notification.Name("openAllPlaces"), object: nil)
+                    }))
+                    alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: nil))
+                    
+                    present(alert, animated: true, completion: nil)
+                }
+            }
+        }
+    }
+    
+    func createPlacesNearbyPlacemarks(map: YMKMap){
+        PlacesNetworkManager.getAllPlacesRequest { [self] responseEntity in
+            if var places = responseEntity {
+                places = findPlacesNearby(places: places)
+                
+                if !(places.count == 0){
+                    removeAllPlacemarks(map: map)
+                    for place in places{
+                        addPlacemark(map, place)
+                    }
+                } else{
+                    let alert = UIAlertController(title: "Упс!", message: "Не можем найти места поблизости", preferredStyle: .alert)
+
+                    alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: nil))
+                    
+                    present(alert, animated: true, completion: nil)
+                }
+            }
+        }
+    }
+    
+    func findPlacesNearby(places:GetAllPlacesRequestResponseEntity) -> GetAllPlacesRequestResponseEntity{
+        var placesNearby:GetAllPlacesRequestResponseEntity = []
+        
+        let placesNearbyRange:Double = 20
+        
+        for place in places{
+            let distance = DistantionCalculator.shared.calculateDistanceFromUser(PlaceCoordinates(latitude: place.latitude, longitude: place.longitude))
+            
+            if distance <= placesNearbyRange{
+                placesNearby.append(place)
+            }
+        }
+        return placesNearby
+    }
 
     func createAllPlacesPlacemarks(map: YMKMap) {
+        removeAllPlacemarks(map: map)
         PlacesNetworkManager.getAllPlacesRequest { [self] responseEntity in
-            if let responseEntity = responseEntity {
-                for placeResponseEntity in responseEntity {
-                    self.addPlacemark(map, placeResponseEntity)
+            if let places = responseEntity {
+                for place in places {
+                    addPlacemark(map, place)
                 }
             }
         }
@@ -203,6 +293,7 @@ private extension PlacesMapViewController {
         )
 
         placemark.setIconWith(image)
+        placemarks.append(placemark)
     }
     
     @objc func hideBottomView(){

@@ -189,6 +189,8 @@ private extension MainTabBarController {
         NotificationCenter.default.addObserver(self, selector: #selector(ratePlace), name: Notification.Name("ratePlace"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(sentRating(_:)), name: Notification.Name("sendRatePlace"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(openAllPlaces), name: Notification.Name("openAllPlaces"), object: nil)
     }
     
     @objc func ratePlace(){
@@ -344,6 +346,11 @@ private extension MainTabBarController {
                 vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
                 vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
             }
+    }
+    
+    @objc func openAllPlaces(){
+        selectedIndex = 0
+        prevSelectedIndex = 0
     }
 
     @objc func findPlaceButtonPressed() {

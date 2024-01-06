@@ -10,7 +10,7 @@ import Foundation
 // MARK: - GetRecentlyPlacesResponseEntity
 
  struct GetRecentlyPlacesResponseEntity: Codable {
-    let recentlyPlaces: [RecentlyPlace]
+    let recentlyPlaces: [GetAllPlacesRequestResponseSingleEntity]
 }
 
 // MARK: - RecentlyPlace
