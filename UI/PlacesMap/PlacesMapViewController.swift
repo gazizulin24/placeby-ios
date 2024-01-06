@@ -51,9 +51,15 @@ final class PlacesMapViewController: UIViewController {
     
     private let bottomView:MapBottomView = MapBottomView()
     private var bottomViewBottomConstraint: Constraint!
-    
-    private let topView:PlacesMapTopView = PlacesMapTopView()
     private var isBottomViewHidden = false
+    
+    private let topView:PlacesMapTopView = {
+        let view = PlacesMapTopView()
+        view.isUserInteractionEnabled = false
+        view.alpha = 0
+        
+        return view
+    }()
 }
 
 // MARK: - Private methods
@@ -256,6 +262,7 @@ private extension PlacesMapViewController {
     
     func createPlacesNearbyPlacemarks(map: YMKMap){
         showBottomView()
+        
         PlacesNetworkManager.getAllPlacesRequest { [self] responseEntity in
             if var places = responseEntity {
                 places = DistantionCalculator.shared.findPlacesNearby(places: places)

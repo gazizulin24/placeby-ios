@@ -40,7 +40,7 @@ final class DistantionCalculator {
     func findPlacesNearby(places:GetAllPlacesRequestResponseEntity) -> GetAllPlacesRequestResponseEntity{
         var placesNearby:GetAllPlacesRequestResponseEntity = []
         
-        let placesNearbyRange:Double = 20
+        let placesNearbyRange:Double = Double(UserDefaults.standard.integer(forKey: "placesNearbyRange"))
         
         for place in places{
             let distance = DistantionCalculator.shared.calculateDistanceFromUser(PlaceCoordinates(latitude: place.latitude, longitude: place.longitude))

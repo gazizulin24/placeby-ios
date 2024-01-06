@@ -32,6 +32,7 @@ class GlobalSettingsViewController: UIViewController {
 
     // MARK: - Private properties
     
+    private let settings:[SettingsCells] = [.nearbyRange]
     
     private let titleLabelView: UILabel = {
         let label = UILabel()
@@ -45,15 +46,32 @@ class GlobalSettingsViewController: UIViewController {
 
     }()
     
+    
+    private lazy var tableView: GlobalSettingsTableView = {
+        let tableView = GlobalSettingsTableView()
+
+        tableView.dataSource = self
+        tableView.delegate = self
+        return tableView
+    }()
+
+    
 }
 // MARK: - Private methods
 private extension GlobalSettingsViewController {
     
     func initialize() {
         view.backgroundColor = .white
-        //view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(closeTextFields)))
         
         configNavigation()
+        
+        view.addSubview(tableView)
+        
+
+        tableView.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(view.snp.topMargin)
+        }
     }
     
     
@@ -80,3 +98,38 @@ private extension GlobalSettingsViewController {
         navigationController?.isNavigationBarHidden = true
     }
 }
+
+
+
+// MARK: - UITableViewDataSource
+
+extension GlobalSettingsViewController: UITableViewDataSource {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+        return settings.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let index = indexPath.row
+
+        switch settings[index]{
+        case .nearbyRange:
+            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlacesNearbySettingsCell.self), for: indexPath) as! PlacesNearbySettingsCell
+            return cell
+        }
+        
+        }
+    }
+
+
+// MARK: - UITableViewDelegate
+
+extension GlobalSettingsViewController: UITableViewDelegate {
+    func tableView(_: UITableView, willDisplay cell: UITableViewCell, forRowAt _: IndexPath) {
+        cell.alpha = 0
+
+        UIView.animate(withDuration: 0.3) {
+            cell.alpha = 1
+        }
+    }
+}
+
