@@ -18,6 +18,8 @@ final class PlacesMapViewController: UIViewController {
         createAllPlacesPlacemarks(map: mapView.mapWindow.map)
         hideBottomView()
         bottomView.showAllPlaces()
+        topView.backConfigure(placeId: UserDefaults.standard.integer(forKey: "placeId"))
+        showTopView()
         focusOn(coordinates: coord, zoom:16)
     }
     

@@ -12,6 +12,11 @@ final class PlacesMapTopView: UIView {
     
     // MARK: - Public
     
+    func backConfigure(placeId:Int){
+        self.placeId = placeId
+        titleLabel.text = "Вернуться?"
+    }
+    
     func configure(with place:GetAllPlacesRequestResponseSingleEntity){
         placeId = place.id
         titleLabel.text = "Открыть \(place.nameOfPlace)?"
