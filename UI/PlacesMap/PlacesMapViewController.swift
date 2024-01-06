@@ -8,6 +8,7 @@
 import MapKit
 import UIKit
 import YandexMapsMobile
+import SnapKit
 
 
 final class PlacesMapViewController: UIViewController {
@@ -47,7 +48,6 @@ final class PlacesMapViewController: UIViewController {
     private var placemarks:[YMKMapObject] = []
 
     private enum UIConstants {
-        static let meButtonSize: CGFloat = 50
         static let meButtonLeadingOffset: CGFloat = 20
         static let meButtonBottomInset: CGFloat = 30
         static let bottomViewHeight:CGFloat = 270
@@ -59,6 +59,7 @@ final class PlacesMapViewController: UIViewController {
     private var userPlacemark: YMKPlacemarkMapObject!
     
     private let bottomView:MapBottomView = MapBottomView()
+    private var bottomViewBottomConstraint: Constraint!
     private var isBottomViewHidden = false
 }
 
@@ -72,32 +73,29 @@ private extension PlacesMapViewController {
             make.centerX.centerY.equalToSuperview()
             make.size.equalToSuperview()
         }
-        mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hideBottomView)))
+        mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hideOrShowBottomView)))
         createUserPlacemark()
         setupNotifications()
 
-//        mapView.addSubview(meButton)
-//
-//        meButton.snp.makeConstraints { make in
-//            make.leading.equalToSuperview().offset(UIConstants.meButtonLeadingOffset)
-//            make.bottom.equalToSuperview().inset(UIConstants.meButtonBottomInset)
-//            make.size.equalTo(UIConstants.meButtonSize)
-//        }
         
         view.addSubview(bottomView)
         
         bottomView.snp.makeConstraints { make in
-            make.bottom.width.centerX.equalToSuperview()
+            make.width.centerX.equalToSuperview()
             make.height.equalTo(UIConstants.bottomViewHeight)
+            bottomViewBottomConstraint = make.bottom.equalToSuperview().constraint
         }
         
         focusOn(coordinates: belarusCoordinates, zoom:6)
         createAllPlacesPlacemarks(map: mapView.mapWindow.map)
+        hideBottomView()
     }
 
     @objc func focusOnUserLocation() {
         let userLat = UserDefaults.standard.double(forKey: "userLatitude")
         let userLong = UserDefaults.standard.double(forKey: "userLongitude")
+        
+        hideBottomView()
 
         focusOn(coordinates: PlaceCoordinates(latitude: userLat, longitude: userLong), zoom: 15)
     }
@@ -112,7 +110,7 @@ private extension PlacesMapViewController {
     
     @objc func changePlaceTypeOnMap(_ sender:Notification){
         guard let type = sender.object as? PlacesToFocusType else {return}
-        
+        showBottomView()
         switch type{
         case .all:
             focusOn(coordinates: belarusCoordinates, zoom: 6)
@@ -160,6 +158,7 @@ private extension PlacesMapViewController {
                         addPlacemark(map, place)
                     }
                 } else{
+                    hideBottomView()
                     let alert = UIAlertController(title: "Нет недавних", message: "Не хотите перейти в каталог мест и посмотреть несколько мест там?", preferredStyle: .alert)
 
                     alert.addAction(UIAlertAction(title: "Перейти", style: .default, handler: { _ in
@@ -183,6 +182,7 @@ private extension PlacesMapViewController {
                         addPlacemark(map, place)
                     }
                 } else{
+                    hideBottomView()
                     let alert = UIAlertController(title: "Нет любимых", message: "Не хотите перейти в каталог мест и найти любимые там?", preferredStyle: .alert)
 
                     alert.addAction(UIAlertAction(title: "Перейти", style: .default, handler: { _ in
@@ -197,9 +197,10 @@ private extension PlacesMapViewController {
     }
     
     func createPlacesNearbyPlacemarks(map: YMKMap){
+        showBottomView()
         PlacesNetworkManager.getAllPlacesRequest { [self] responseEntity in
             if var places = responseEntity {
-                places = findPlacesNearby(places: places)
+                places = DistantionCalculator.shared.findPlacesNearby(places: places)
                 
                 if !(places.count == 0){
                     removeAllPlacemarks(map: map)
@@ -207,6 +208,7 @@ private extension PlacesMapViewController {
                         addPlacemark(map, place)
                     }
                 } else{
+                    hideBottomView()
                     let alert = UIAlertController(title: "Упс!", message: "Не можем найти места поблизости", preferredStyle: .alert)
 
                     alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: nil))
@@ -217,20 +219,7 @@ private extension PlacesMapViewController {
         }
     }
     
-    func findPlacesNearby(places:GetAllPlacesRequestResponseEntity) -> GetAllPlacesRequestResponseEntity{
-        var placesNearby:GetAllPlacesRequestResponseEntity = []
-        
-        let placesNearbyRange:Double = 20
-        
-        for place in places{
-            let distance = DistantionCalculator.shared.calculateDistanceFromUser(PlaceCoordinates(latitude: place.latitude, longitude: place.longitude))
-            
-            if distance <= placesNearbyRange{
-                placesNearby.append(place)
-            }
-        }
-        return placesNearby
-    }
+    
 
     func createAllPlacesPlacemarks(map: YMKMap) {
         removeAllPlacemarks(map: map)
@@ -296,17 +285,30 @@ private extension PlacesMapViewController {
         placemarks.append(placemark)
     }
     
+    @objc func showBottomView(){
+        UIView.animate(withDuration: 0.3) {
+            self.bottomView.snp.updateConstraints { make in
+                make.bottom.equalToSuperview().offset(0)
+            }
+        }
+        isBottomViewHidden = false
+    }
+    
     @objc func hideBottomView(){
+        UIView.animate(withDuration: 0.3) {
+            self.bottomView.snp.updateConstraints { make in
+                make.bottom.equalToSuperview().offset(210)
+            }
+            self.bottomView.layoutIfNeeded()
+        }
+        isBottomViewHidden = true
+    }
+    
+    @objc func hideOrShowBottomView(){
         if isBottomViewHidden{
-            UIView.animate(withDuration: 0.2){
-                self.bottomView.frame.origin.y -= 210
-            }
-            isBottomViewHidden = false
+            showBottomView()
         } else{
-            UIView.animate(withDuration: 0.2){
-                self.bottomView.frame.origin.y += 210
-            }
-            isBottomViewHidden = true
+            hideBottomView()
         }
     }
 }

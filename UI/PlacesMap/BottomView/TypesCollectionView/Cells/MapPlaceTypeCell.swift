@@ -47,8 +47,8 @@ private extension MapPlaceTypeCell {
         backgroundColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
         layer.cornerRadius = 20
         clipsToBounds = true
-        layer.borderColor = CGColor(red: 54 / 255, green: 54 / 255, blue: 54 / 255, alpha: 1)
-        layer.borderWidth = 2
+//        layer.borderColor = CGColor(red: 54 / 255, green: 54 / 255, blue: 54 / 255, alpha: 1)
+//        layer.borderWidth = 2
         addSubview(typeLabel)
         
         typeLabel.snp.makeConstraints { make in

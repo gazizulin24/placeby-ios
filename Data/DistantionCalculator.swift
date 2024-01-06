@@ -37,6 +37,21 @@ final class DistantionCalculator {
         return distanceInKm
     }
     
+    func findPlacesNearby(places:GetAllPlacesRequestResponseEntity) -> GetAllPlacesRequestResponseEntity{
+        var placesNearby:GetAllPlacesRequestResponseEntity = []
+        
+        let placesNearbyRange:Double = 20
+        
+        for place in places{
+            let distance = DistantionCalculator.shared.calculateDistanceFromUser(PlaceCoordinates(latitude: place.latitude, longitude: place.longitude))
+            
+            if distance <= placesNearbyRange{
+                placesNearby.append(place)
+            }
+        }
+        return placesNearby
+    }
+    
 }
 
 extension Double {
