@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MapMeCell: UICollectionViewCell {
+final class MapMeCell: UICollectionViewCell {
     
     func configure(){
         meLabel.text = "Вы"

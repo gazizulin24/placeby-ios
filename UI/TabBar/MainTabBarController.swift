@@ -353,8 +353,6 @@ private extension MainTabBarController {
                 vc.openPlaceFromPlaceVC(coord: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
             }
         }
-
-        
     }
     
     @objc func openAllPlaces(){

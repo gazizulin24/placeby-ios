@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MapPlaceTypeCell: UICollectionViewCell {
+final class MapPlaceTypeCell: UICollectionViewCell {
     
     func configure(title:String, type: PlacesToFocusType){
         typeLabel.text = title

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MapPlacesTypesCollectionView: UICollectionView {
+final class MapPlacesTypesCollectionView: UICollectionView {
 
     
     // MARK: - Init

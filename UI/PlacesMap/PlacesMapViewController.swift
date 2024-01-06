@@ -14,9 +14,6 @@ import SnapKit
 final class PlacesMapViewController: UIViewController {
     
     // MARK: - Public
-
-    
-    
     func openPlaceFromPlaceVC(coord:PlaceCoordinates){
         createAllPlacesPlacemarks(map: mapView.mapWindow.map)
         hideBottomView()
@@ -54,6 +51,8 @@ final class PlacesMapViewController: UIViewController {
     
     private let bottomView:MapBottomView = MapBottomView()
     private var bottomViewBottomConstraint: Constraint!
+    
+    private let topView:PlacesMapTopView = PlacesMapTopView()
     private var isBottomViewHidden = false
 }
 
@@ -62,6 +61,7 @@ final class PlacesMapViewController: UIViewController {
 private extension PlacesMapViewController {
     func initialization() {
         view.addSubview(mapView)
+        navigationController?.isNavigationBarHidden = true
 
         mapView.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
@@ -80,10 +80,20 @@ private extension PlacesMapViewController {
             bottomViewBottomConstraint = make.bottom.equalToSuperview().constraint
         }
         
+        view.addSubview(topView)
+        
+        topView.snp.makeConstraints { make in
+            make.top.equalTo(view.snp.topMargin)
+            make.width.equalToSuperview().multipliedBy(0.9)
+            make.height.equalTo(60)
+            make.centerX.equalToSuperview()
+        }
+        
         focusOn(coordinates: belarusCoordinates, zoom:6)
         createAllPlacesPlacemarks(map: mapView.mapWindow.map)
         bottomView.showAllPlaces()
         hideBottomView()
+        hideTopView()
     }
     
     
@@ -120,6 +130,40 @@ private extension PlacesMapViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(focusOnUserLocation), name: Notification.Name("focusOnUserLocation"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(changePlaceTypeOnMap(_:)), name: Notification.Name("changePlaceTypeOnMap"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(focusOnPlaceFromBottomView(_:)), name: Notification.Name("focusOnPlaceFromBottomView"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(hideTopView), name: Notification.Name("closeTopMapView"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(openPlaceFromTopMapView), name: Notification.Name("openPlaceFromTopMapView"), object: nil)
+    }
+    
+    @objc func openPlaceFromTopMapView(){
+        hideTopView()
+        NotificationCenter.default.post(name: Notification.Name("findPlace"), object: nil)
+    }
+    
+    @objc func showTopView(){
+        UIView.animate(withDuration: 0.3) {
+            self.topView.alpha = 1
+        }
+        topView.isUserInteractionEnabled = true
+    }
+    
+    @objc func hideTopView(){
+        UIView.animate(withDuration: 0.3) {
+            self.topView.alpha = 0
+        }
+        topView.isUserInteractionEnabled = false
+    }
+    
+    @objc func focusOnPlaceFromBottomView(_ sender: Notification){
+        guard let place = sender.object as? GetAllPlacesRequestResponseSingleEntity else {return}
+        
+        topView.configure(with: place)
+        showTopView()
+        
+        focusOn(coordinates: PlaceCoordinates(latitude: place.latitude, longitude: place.longitude), zoom: 15)
     }
     
     @objc func changePlaceTypeOnMap(_ sender:Notification){

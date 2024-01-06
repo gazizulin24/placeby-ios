@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MapPlacesCollectionView: UICollectionView {
+final class MapPlacesCollectionView: UICollectionView {
 
     // MARK: - Init
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {

@@ -15,6 +15,7 @@ final class MapPlaceCell: UICollectionViewCell {
         placeId = place.id
         placeNameLabel.text = place.nameOfPlace
         setImageByUrl(url: place.photos.first!.photoURL)
+        self.place = place
     }
     var placeId = 0
 
@@ -32,6 +33,8 @@ final class MapPlaceCell: UICollectionViewCell {
     }
 
     // MARK: - Private properties
+    
+    private var place:GetAllPlacesRequestResponseSingleEntity!
 
     private let placeImageView: UIImageView = {
         let imageView = UIImageView()
@@ -40,6 +43,7 @@ final class MapPlaceCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 10
         imageView.clipsToBounds = true
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
 
@@ -69,6 +73,8 @@ private extension MapPlaceCell {
             make.width.equalToSuperview().multipliedBy(0.9)
             make.height.equalTo(150)
         }
+        
+        placeImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(focusOnPlace)))
 
         contentView.addSubview(placeNameLabel)
 
@@ -79,6 +85,8 @@ private extension MapPlaceCell {
             make.height.equalTo(20)
             make.bottom.equalToSuperview().inset(15)
         }
+        
+        
     }
     
     func setImageByUrl(url: String) {
@@ -89,5 +97,10 @@ private extension MapPlaceCell {
                 print("не удалось загрузить фото")
             }
         }
+    }
+    
+    @objc func focusOnPlace(){
+        print(place)
+        NotificationCenter.default.post(name: Notification.Name("focusOnPlaceFromBottomView"), object: place)
     }
 }
