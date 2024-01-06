@@ -9,6 +9,12 @@ import UIKit
 import SnapKit
 
 final class MapBottomView: UIView {
+    
+    // MARK: - Public
+    
+    func showAllPlaces(){
+        findAllPlaces()
+    }
 
     // MARK: - Init
     override init(frame: CGRect) {
@@ -139,7 +145,6 @@ private extension MapBottomView {
             make.height.equalTo(UIConstants.placesCollectionViewHeight)
         }
         
-        findAllPlaces()
     }
     
     func configNotifications(){

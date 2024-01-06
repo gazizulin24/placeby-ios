@@ -12,25 +12,18 @@ import SnapKit
 
 
 final class PlacesMapViewController: UIViewController {
+    
     // MARK: - Public
 
-    func focusOnPlace(_ place: GetAllPlacesRequestResponseSingleEntity) {
-        self.place = place
-        focusOn(coordinates: PlaceCoordinates(latitude: place.latitude, longitude: place.longitude), zoom: 6)
+    
+    
+    func openPlaceFromPlaceVC(coord:PlaceCoordinates){
+        createAllPlacesPlacemarks(map: mapView.mapWindow.map)
+        hideBottomView()
+        bottomView.showAllPlaces()
+        focusOn(coordinates: coord, zoom:16)
     }
-
-    func focusOn(coordinates coord: PlaceCoordinates, zoom:Float = 11) {
-        mapView.mapWindow.map.move(
-            with: YMKCameraPosition(
-                target: YMKPoint(latitude: coord.latitude, longitude: coord.longitude),
-                zoom: zoom,
-                azimuth: 0,
-                tilt: 0
-            ),
-            animation: YMKAnimation(type: YMKAnimationType.smooth, duration: 1),
-            cameraCallback: nil
-        )
-    }
+    
 
     // MARK: - Livecycle
 
@@ -39,6 +32,7 @@ final class PlacesMapViewController: UIViewController {
 
         initialization()
     }
+    
 
     // MARK: - Private constants
 
@@ -88,7 +82,27 @@ private extension PlacesMapViewController {
         
         focusOn(coordinates: belarusCoordinates, zoom:6)
         createAllPlacesPlacemarks(map: mapView.mapWindow.map)
+        bottomView.showAllPlaces()
         hideBottomView()
+    }
+    
+    
+    func focusOnPlace(_ place: GetAllPlacesRequestResponseSingleEntity) {
+        self.place = place
+        focusOn(coordinates: PlaceCoordinates(latitude: place.latitude, longitude: place.longitude), zoom: 6)
+    }
+
+    func focusOn(coordinates coord: PlaceCoordinates, zoom:Float = 11) {
+        mapView.mapWindow.map.move(
+            with: YMKCameraPosition(
+                target: YMKPoint(latitude: coord.latitude, longitude: coord.longitude),
+                zoom: zoom,
+                azimuth: 0,
+                tilt: 0
+            ),
+            animation: YMKAnimation(type: YMKAnimationType.smooth, duration: 1),
+            cameraCallback: nil
+        )
     }
 
     @objc func focusOnUserLocation() {
@@ -311,4 +325,6 @@ private extension PlacesMapViewController {
             hideBottomView()
         }
     }
+    
+    
 }

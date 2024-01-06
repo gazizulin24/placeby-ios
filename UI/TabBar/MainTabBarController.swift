@@ -87,6 +87,9 @@ private extension MainTabBarController {
 
         viewControllers = getViewControllers()
         
+        selectedIndex = 0
+        
+        
     }
 
     func getViewControllers() -> [UIViewController] {
@@ -96,6 +99,7 @@ private extension MainTabBarController {
         allPlacesViewController.tabBarItem.image = UIImage(systemName: "magazine")
         allPlacesViewController.tabBarItem.selectedImage = UIImage(systemName: "magazine.fill")
 
+        
         let placesMapViewController = UINavigationController(rootViewController: PlacesMapViewController())
 
         placesMapViewController.tabBarItem.title = "Карта"
@@ -338,14 +342,19 @@ private extension MainTabBarController {
     @objc func openPlaceOnMap() {
         selectedIndex = 1
         prevSelectedIndex = selectedIndex
-
-        if let nc = viewControllers![1] as? UINavigationController,
-           let vc = nc.viewControllers.first! as? PlacesMapViewController {
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
+            if let nc = self.viewControllers![1] as? UINavigationController,
+               let vc = nc.viewControllers.first! as? PlacesMapViewController {
                 let placeLatitude = UserDefaults.standard.double(forKey: "placeToOpenLatitude")
                 let placeLongitude = UserDefaults.standard.double(forKey: "placeToOpenLongitude")
-                vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
-                vc.focusOn(coordinates: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
+                let userId = UserDefaults.standard.integer(forKey: "userId")
+                let placeId = UserDefaults.standard.integer(forKey: "placeId")
+                vc.openPlaceFromPlaceVC(coord: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
             }
+        }
+
+        
     }
     
     @objc func openAllPlaces(){
