@@ -353,21 +353,36 @@ private extension PlacesMapViewController {
     }
     
     @objc func showBottomView(){
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.2) {
+            self.bottomView.alpha = 0
+            
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.25){
             self.bottomView.snp.updateConstraints { make in
                 make.bottom.equalToSuperview().offset(0)
+            }
+            UIView.animate(withDuration: 0.2) {
+                self.bottomView.alpha = 1
             }
         }
         isBottomViewHidden = false
     }
     
     @objc func hideBottomView(){
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.2) {
+            self.bottomView.alpha = 0
+            
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.25){
             self.bottomView.snp.updateConstraints { make in
                 make.bottom.equalToSuperview().offset(210)
             }
-            self.bottomView.layoutIfNeeded()
+            UIView.animate(withDuration: 0.2) {
+                self.bottomView.alpha = 1
+            }
         }
+        
         isBottomViewHidden = true
     }
     
