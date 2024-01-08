@@ -36,6 +36,18 @@ final class MapMeCell: UICollectionViewCell {
         
         return label
     }()
+    
+    private let meView:UIView = {
+        let view = UIView()
+        
+        view.backgroundColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
+        view.layer.cornerRadius = 25
+        view.clipsToBounds = true
+        
+        return view
+    }()
+    
+    
 }
 
 
@@ -43,18 +55,25 @@ final class MapMeCell: UICollectionViewCell {
 private extension MapMeCell {
     
     func initialize(){
-        backgroundColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
-        layer.cornerRadius = 25
-        clipsToBounds = true
+        
 //        layer.borderColor = CGColor(red: 54 / 255, green: 54 / 255, blue: 54 / 255, alpha: 1)
 //        layer.borderWidth = 2
         
-        addSubview(meLabel)
+        addSubview(meView)
+        
+        meView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(10)
+            make.size.equalTo(snp.height)
+        }
+        
+        meView.addSubview(meLabel)
         
         meLabel.snp.makeConstraints { make in
             make.size.equalToSuperview().multipliedBy(0.7)
             make.center.equalToSuperview()
         }
+        
+        
         
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(focusOnUserLocation)))
     }

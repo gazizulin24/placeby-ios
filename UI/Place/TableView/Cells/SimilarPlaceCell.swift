@@ -76,6 +76,7 @@ private extension SimilarPlaceCell {
         placeImageView.snp.makeConstraints { make in
             make.width.top.equalToSuperview()
             make.height.equalTo(UIConstants.imageViewHeight)
+            make.leading.equalToSuperview().offset(10)
         }
         
         
@@ -85,6 +86,7 @@ private extension SimilarPlaceCell {
             make.centerX.width.equalToSuperview()
             make.top.equalTo(placeImageView.snp.bottom)
             make.height.equalTo(UIConstants.labelHeight)
+            make.leading.equalToSuperview().offset(10)
         }
     }
     

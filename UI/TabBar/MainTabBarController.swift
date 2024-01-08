@@ -275,6 +275,7 @@ private extension MainTabBarController {
 
     @objc func openFeedback() {
         selectedIndex = 4
+        prevSelectedIndex = 4
         
         
         if let viewController = viewControllers?.last! as? UINavigationController {

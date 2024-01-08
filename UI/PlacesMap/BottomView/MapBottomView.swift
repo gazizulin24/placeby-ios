@@ -44,7 +44,7 @@ final class MapBottomView: UIView {
     
     private enum UIConstants {
         static let cellHeight:CGFloat = 50
-        static let meCellWidth:CGFloat = 50
+        static let meCellWidth:CGFloat = 60
         static let typeCellWidth:CGFloat = 100
         static let typesCollectionViewHeight:CGFloat = 50
         static let placesViewHeight:CGFloat = 200
@@ -287,4 +287,5 @@ extension MapBottomView: UICollectionViewDelegateFlowLayout {
         
         return CGSize.zero
     }
+    
 }
