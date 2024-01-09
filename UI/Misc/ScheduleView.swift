@@ -13,34 +13,16 @@ final class ScheduleView: UIView {
     
     // MARK: - Public
     func configure(){
-        var prevView = UIView()
         
-        for dayName in daysRus {
-            
-            let time = "00.00 - 00.00"
-            
-            let view = createDayScheduleView(day: dayName, time: time)
-            
-            addSubview(view)
-            
-            view.snp.makeConstraints { make in
-                make.height.equalTo(UIConstants.dayViewHeight)
-                make.width.equalToSuperview().multipliedBy(0.9)
-                make.centerX.equalToSuperview()
+        PlacesNetworkManager.getAllPlaceTimetable(placeId: UserDefaults.standard.integer(forKey: "placeId")) { [self] responseEntity in
+            if let timetable = responseEntity?.timetable {
+                removeOldSchedule()
+                createTimetable(timetable: timetable)
+            } else {
+                print("error getAllPlaceTimetable")
             }
-            
-            print(dayName)
-            if dayName == "Понедельник"{
-                view.snp.makeConstraints { make in
-                    make.top.equalTo(placeNameLabel.snp.bottom)
-                }
-            } else{
-                view.snp.makeConstraints { make in
-                    make.top.equalTo(prevView.snp.bottom)
-                }
-            }
-            prevView = view
         }
+        
     }
     
     // MARK: - Init
@@ -65,6 +47,7 @@ final class ScheduleView: UIView {
         "saturday": "Суббота",
         "sunday": "Воскресенье"
     ]
+    private var daysViews:[UIView] = []
     private enum UIConstants {
         static let closeButtonHeight:CGFloat = 50
         static let placeNameLabelHeight:CGFloat = 40
@@ -119,6 +102,46 @@ private extension ScheduleView {
             make.centerX.width.top.equalToSuperview()
             make.height.equalTo(UIConstants.placeNameLabelHeight)
         }
+    }
+    
+    func createTimetable(timetable: [Timetable]){
+        for (i, day) in timetable.enumerated() {
+            let timeOpen = String(day.startTime.dropLast(3))
+            let timeClose = String(day.endTime.dropLast(3))
+            let dayName = daysOfWeek[day.dayOfWeek]!
+            var scheduleString = "\(timeOpen) - \(timeClose)"
+            
+            if (timeOpen == timeClose) && (timeOpen == "00:00") {
+                scheduleString = "Выходной"
+            }
+            
+            if (timeOpen == "00:00") && (timeClose == "23:59") {
+                scheduleString = "Круглосуточно"
+            }
+            
+            let view = createDayScheduleView(day: dayName, time: scheduleString)
+            
+            addSubview(view)
+            print(dayName)
+            view.snp.makeConstraints { make in
+                make.height.equalTo(UIConstants.dayViewHeight)
+                make.width.equalToSuperview().multipliedBy(0.9)
+                make.centerX.equalToSuperview()
+                if i == 0 {
+                    make.top.equalTo(placeNameLabel.snp.bottom)
+                } else {
+                    make.top.equalTo(daysViews[i-1].snp.bottom)
+                }
+            }
+            daysViews.append(view)
+        }
+    }
+    
+    func removeOldSchedule(){
+        for view in daysViews {
+            view.removeFromSuperview()
+        }
+        daysViews = []
     }
     
     @objc func closeScheduleView(){

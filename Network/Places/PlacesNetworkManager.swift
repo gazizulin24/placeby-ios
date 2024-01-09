@@ -14,6 +14,7 @@ final class PlacesNetworkManager {
         static let getIsPlaceIsFavouriteForUserEndpoint: String = GlobalNetworkConstants.host + "/places/isFav"
         static let getRatingForPlace: String = GlobalNetworkConstants.host + "/places/rating/"
         static let postRatePlace: String = GlobalNetworkConstants.host + "/places/rating/"
+        static let getFullTimetable: String = GlobalNetworkConstants.host + "/places/timetable/"
     }
 
     static func getAllPlacesRequest(completion: @escaping (GetAllPlacesRequestResponseEntity?) -> Void) {
@@ -67,6 +68,17 @@ final class PlacesNetworkManager {
 
         AF.request(url, method: .post, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response() { result in
             print(result)
+        }
+        
+    }
+    
+    static func getAllPlaceTimetable(placeId:Int, completion: @escaping (FullTimetableResponseEntity?) -> ()){
+        
+        let url = Endpoints.getFullTimetable + String(placeId)
+        
+        AF.request(url, method: .get, encoding: JSONEncoding.default).responseDecodable(of: FullTimetableResponseEntity.self) { response in
+            print(response)
+            completion(response.value)
         }
         
     }
