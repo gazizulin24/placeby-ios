@@ -219,14 +219,19 @@ private extension MainTabBarController {
     
     @objc func sentRating(_ sender:Notification){
         let placeId = UserDefaults.standard.integer(forKey: "placeId")
-        if let rating = sender.object {
+        if let rating = sender.object as? Int {
             print("user rated place \(placeId): ", rating)
             
-            // тут будет логика того как мы обработаем уже оценочку
+            PlacesNetworkManager.ratePlace(placeId: placeId, rating: rating)
             
         }
         
         closeRateView()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+            if let nc = self.viewControllers?.first as? UINavigationController, let vc = nc.viewControllers.last! as? PlaceViewController{
+                vc.configureWithId(placeId)
+            }
+        }
     }
     
     @objc func closeRateView(){
@@ -349,8 +354,6 @@ private extension MainTabBarController {
                let vc = nc.viewControllers.first! as? PlacesMapViewController {
                 let placeLatitude = UserDefaults.standard.double(forKey: "placeToOpenLatitude")
                 let placeLongitude = UserDefaults.standard.double(forKey: "placeToOpenLongitude")
-                let userId = UserDefaults.standard.integer(forKey: "userId")
-                let placeId = UserDefaults.standard.integer(forKey: "placeId")
                 vc.openPlaceFromPlaceVC(coord: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
             }
         }

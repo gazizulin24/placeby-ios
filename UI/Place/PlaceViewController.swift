@@ -19,6 +19,7 @@ final class PlaceViewController: UIViewController {
             if let place = responseEntity {
                 placeDataLoaded()
                 self.place = place
+                print(place.rating)
                 placeLabel.text = place.nameOfPlace
                 print(placeLabel.text!)
                 navigationItem.titleView = placeLabel

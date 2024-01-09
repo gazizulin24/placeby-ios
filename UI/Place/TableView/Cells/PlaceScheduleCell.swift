@@ -13,20 +13,31 @@ final class PlaceScheduleCell: UITableViewCell {
     func configure(with place: GetAllPlacesRequestResponseSingleEntity){
         print(place)
         
-        let isOpen = false
-        let timeOpen = "8.00"
-        let timeClose = "22.00"
+        guard let timetable = place.todayTimetable else {return}
+        let timeOpen = String(timetable.startTime.dropLast(3))
+        let timeClose = String(timetable.endTime.dropLast(3))
         
-        if !isOpen {
+        let isOpen = place.isOpen ?? false
+        
+        
+        if !isOpen{
             isOpenLabel.text = "Закрыто"
             isOpenLabel.textColor = UIColor(cgColor: CGColor(red: 240/255, green: 27/255, blue: 32/255, alpha: 1))
         }
-        let scheduleString = "\(timeOpen) - \(timeClose)"
+        var scheduleString = "\(timeOpen) - \(timeClose)"
         
-        let attributedText = NSAttributedString(string: scheduleString, attributes: [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue])
+        if (timeOpen == timeClose) && (timeOpen == "00:00") {
+            scheduleString = "Выходной"
+        }
         
+        if (timeOpen == "00:00") && (timeClose == "23:59") {
+            scheduleString = "Круглосуточно"
+        }
+//        
+//        let attributedText = NSAttributedString(string: scheduleString, attributes: [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue])
+//        
         
-        scheduleTimeLabel.attributedText = attributedText
+        scheduleTimeLabel.text = scheduleString
         
         
     }
@@ -48,7 +59,7 @@ final class PlaceScheduleCell: UITableViewCell {
         static let schedulePlacesLabelFontSize:CGFloat = 20
         static let leadingOffset:CGFloat = 10
         static let topOffset:CGFloat = 10
-        static let scheduleViewHeight:CGFloat = 20
+        static let scheduleViewHeight:CGFloat = 25
         static let scheduleViewLabelsFontSize:CGFloat = 20
     }
     

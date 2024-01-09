@@ -14,7 +14,7 @@ final class PlaceDescriptionCell: UITableViewCell {
     func configure(with place:GetAllPlacesRequestResponseSingleEntity){
         titleLabel.text = place.nameOfPlace
         descriptionLabel.text = place.description
-        rateLabel.text = "5.0"
+        rateLabel.text = String(place.rating)
     }
 
     // MARK: - Init

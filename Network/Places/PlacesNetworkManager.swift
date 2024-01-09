@@ -12,10 +12,13 @@ final class PlacesNetworkManager {
         static let getAllPlacesEndpoint: String = GlobalNetworkConstants.host + "/places"
         static let getAllPlacesByTypeEndpoint: String = GlobalNetworkConstants.host + "/places/type/"
         static let getIsPlaceIsFavouriteForUserEndpoint: String = GlobalNetworkConstants.host + "/places/isFav"
+        static let getRatingForPlace: String = GlobalNetworkConstants.host + "/places/rating/"
+        static let postRatePlace: String = GlobalNetworkConstants.host + "/places/rating/"
     }
 
     static func getAllPlacesRequest(completion: @escaping (GetAllPlacesRequestResponseEntity?) -> Void) {
         AF.request(Endpoints.getAllPlacesEndpoint, method: .get, encoding: JSONEncoding.default).responseDecodable(of: GetAllPlacesRequestResponseEntity.self) { response in
+            
             completion(response.value)
         }
     }
@@ -45,9 +48,26 @@ final class PlacesNetworkManager {
             "Content-Type": "application/json",
         ]
 
-        AF.request(Endpoints.getIsPlaceIsFavouriteForUserEndpoint, method: .get, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).responseDecodable(of: IsPlaceIsFavouriteResponseEntity.self) { response in
+        AF.request(Endpoints.getIsPlaceIsFavouriteForUserEndpoint, method: .post, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).responseDecodable(of: IsPlaceIsFavouriteResponseEntity.self) { response in
             print(response)
             completion(response.value)
         }
+    }
+    
+    
+    static func ratePlace(placeId:Int, rating:Int){
+        let parametrs: Parameters = [
+            "rating": rating,
+        ]
+        let headers: HTTPHeaders = [
+            "Content-Type": "application/json",
+        ]
+        
+        let url = Endpoints.postRatePlace + String(placeId)
+
+        AF.request(url, method: .post, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response() { result in
+            print(result)
+        }
+        
     }
 }

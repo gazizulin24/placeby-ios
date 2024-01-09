@@ -35,7 +35,7 @@ final class PlacesMapViewController: UIViewController {
 
     // MARK: - Private constants
 
-    private var place = GetAllPlacesRequestResponseSingleEntity(id: 0, nameOfPlace: "", description: "", photos: [], longitude: 0, latitude: 0, types: [])
+    private var place = GetAllPlacesRequestResponseSingleEntity(id: 0, nameOfPlace: "", description: "", photos: [], longitude: 0, latitude: 0, types: [] ,todayTimetable: TodayTimetable(dayOfWeek: "", startTime: "", endTime: ""), rating: 0, isOpen: false)
 
     private let belarusCoordinates = PlaceCoordinates(latitude: 53.902735, longitude: 27.555691)
     private var placemarks:[YMKMapObject] = []

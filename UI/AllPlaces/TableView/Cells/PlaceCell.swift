@@ -14,7 +14,7 @@ final class PlaceCell: UITableViewCell {
     func configure(with place:GetAllPlacesRequestResponseSingleEntity) {
         setImageByUrl(url: place.photos.first!.photoURL)
         
-        rateLabel.text = "5.0"
+        rateLabel.text = String(place.rating)
 
         titleLabel.text = place.nameOfPlace
         descriptionLabel.text = place.description

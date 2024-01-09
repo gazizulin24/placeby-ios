@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+
 final class MapBottomView: UIView {
     
     // MARK: - Public
