@@ -9,6 +9,16 @@ import SnapKit
 import UIKit
 
 final class ProfileViewController: UIViewController {
+    
+    // MARK: - Public
+    
+    @objc func updateUserData(){
+        indicator.isHidden = false
+        indicator.startAnimating()
+        mainTableView.isHidden = true
+        makeRequest()
+    }
+    
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -61,6 +71,24 @@ final class ProfileViewController: UIViewController {
 
         return indicator
     }()
+    
+    private let tableViewIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+
+        indicator.startAnimating()
+
+        indicator.color = .black
+
+        return indicator
+    }()
+    
+    private lazy var refresh: UIRefreshControl = {
+        let refresh = UIRefreshControl()
+        refresh.tintColor = .black
+        refresh.addTarget(self, action: #selector(refreshUserData), for: .valueChanged)
+        return refresh
+    }()
+    
 }
 
 // MARK: - Private methods
@@ -76,6 +104,8 @@ private extension ProfileViewController {
         indicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+        
+        mainTableView.addSubview(refresh)
 
         view.addSubview(mainTableView)
 
@@ -95,6 +125,7 @@ private extension ProfileViewController {
                                  sex: response.gender)
                 UserDefaults.standard.setValue(response.name, forKey: "username")
                 UserDefaults.standard.setValue(response.gender, forKey: "userGender")
+                UserDefaults.standard.setValue(response.dateOfBirth, forKey: "userDateOfBirth")
                 self.endLoading()
             } else {
                 print("ошибка makeGetPersonRequest")
@@ -102,6 +133,11 @@ private extension ProfileViewController {
 //                self.endLoading()
             }
         }
+    }
+    
+    @objc func refreshUserData(){
+        refresh.endRefreshing()
+        makeRequest()
     }
 
     func configureNotifications() {}

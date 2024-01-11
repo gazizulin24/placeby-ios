@@ -153,10 +153,15 @@ private extension ProfileSettingsViewController {
         print(usernameTextField.text ?? "nil")
         print(pickerViewItems[sexPickerView.selectedRow(inComponent: 0)], sex[sexPickerView.selectedRow(inComponent: 0)])
         
+        let gender = sex[sexPickerView.selectedRow(inComponent: 0)]
+        let name = usernameTextField.text ?? "nil"
+        
+        UserNetworkManager.makeUpdateUserRequest(gender: gender, name: name)
+        
         usernameTextField.resignFirstResponder()
         
         let alert = UIAlertController(title: "Отлично!", message: "Данные обновлены", preferredStyle: .alert)
-
+        
         
         alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel, handler: { [self] _ in
             back()
@@ -189,6 +194,13 @@ private extension ProfileSettingsViewController {
     @objc func back() {
         navigationController?.setViewControllers([navigationController!.viewControllers.first!], animated: true)
         navigationController?.isNavigationBarHidden = true
+        
+        
+        
+        guard let userVC = navigationController?.viewControllers.last! as? ProfileViewController else { return }
+        
+        print(userVC)
+        userVC.updateUserData()
     }
 }
 
