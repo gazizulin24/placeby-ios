@@ -7,8 +7,8 @@
 
 import Foundation
 
- struct RecentlyPlaceData {
+struct RecentlyPlaceData {
     let name: String
     let imageUrl: String
-    let id:Int
+    let id: Int
 }

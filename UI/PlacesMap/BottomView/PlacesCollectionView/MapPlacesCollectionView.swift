@@ -8,27 +8,28 @@
 import UIKit
 
 final class MapPlacesCollectionView: UICollectionView {
-
     // MARK: - Init
+
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
         initialize()
     }
-    
-    required init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
 
 // MARK: - Private methods
+
 private extension MapPlacesCollectionView {
-    func initialize(){
+    func initialize() {
         backgroundColor = .clear
-        
+
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
-        
+
         register(MapPlaceCell.self, forCellWithReuseIdentifier: String(describing: MapPlaceCell.self))
     }
 }

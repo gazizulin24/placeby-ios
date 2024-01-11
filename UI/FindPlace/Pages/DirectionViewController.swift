@@ -50,7 +50,7 @@ final class DirectionViewController: UIViewController {
 
         button.setTitle("Да", for: .normal)
         button.tintColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
-        button.addTarget(self, action: #selector(continueButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(yesButtonPressed), for: .touchUpInside)
 
         return button
     }()
@@ -60,16 +60,11 @@ final class DirectionViewController: UIViewController {
 
         button.setTitle("Нет", for: .normal)
         button.tintColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
-        button.addTarget(self, action: #selector(continueButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(noButtonPressed), for: .touchUpInside)
 
         return button
     }()
 
-    @objc func continueButtonPressed() {
-        if let viewController = parent as? FindPlacePageViewController {
-            viewController.nextPage()
-        }
-    }
 }
 
 // MARK: - Private methods
@@ -108,6 +103,23 @@ private extension DirectionViewController {
             make.bottom.equalTo(noButton.snp.top).inset(-20)
             make.width.equalTo(200)
             make.height.equalTo(70)
+        }
+    }
+    
+    
+    @objc func yesButtonPressed(){
+        UserDefaults.standard.setValue(true, forKey: "isNearbyOrNo")
+        continueButtonPressed()
+    }
+    
+    @objc func noButtonPressed(){
+        UserDefaults.standard.setValue(false, forKey: "isNearbyOrNo")
+        continueButtonPressed()
+    }
+    
+    func continueButtonPressed() {
+        if let viewController = parent as? FindPlacePageViewController {
+            viewController.nextPage()
         }
     }
 }

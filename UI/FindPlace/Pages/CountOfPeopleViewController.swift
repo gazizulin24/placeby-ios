@@ -51,7 +51,7 @@ final class CountOfPeopleViewController: UIViewController {
 
         button.setTitle("Пойду один", for: .normal)
         button.tintColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
-        button.addTarget(self, action: #selector(continueButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(singleButtonPressed), for: .touchUpInside)
 
         return button
     }()
@@ -61,7 +61,7 @@ final class CountOfPeopleViewController: UIViewController {
 
         button.setTitle("Пойдем парой", for: .normal)
         button.tintColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
-        button.addTarget(self, action: #selector(continueButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(pairButtonPressed), for: .touchUpInside)
 
         return button
     }()
@@ -71,16 +71,10 @@ final class CountOfPeopleViewController: UIViewController {
 
         button.setTitle("Пойдем компанией", for: .normal)
         button.tintColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
-        button.addTarget(self, action: #selector(continueButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(companyButtonPressed), for: .touchUpInside)
 
         return button
     }()
-
-    @objc func continueButtonPressed() {
-        if let viewController = parent as? FindPlacePageViewController {
-            viewController.nextPage()
-        }
-    }
 }
 
 // MARK: - Private methods
@@ -127,6 +121,25 @@ private extension CountOfPeopleViewController {
             make.bottom.equalTo(pairButton.snp.top).inset(-20)
             make.width.equalTo(200)
             make.height.equalTo(70)
+        }
+    }
+    
+    @objc func singleButtonPressed(){
+        UserDefaults.standard.setValue(1, forKey: "countOfPeople")
+        continueButtonPressed()
+    }
+    @objc func pairButtonPressed(){
+        UserDefaults.standard.setValue(2, forKey: "countOfPeople")
+        continueButtonPressed()
+    }
+    @objc func companyButtonPressed(){
+        UserDefaults.standard.setValue(5, forKey: "countOfPeople")
+        continueButtonPressed()
+    }
+    
+     func continueButtonPressed() {
+        if let viewController = parent as? FindPlacePageViewController {
+            viewController.nextPage()
         }
     }
 }

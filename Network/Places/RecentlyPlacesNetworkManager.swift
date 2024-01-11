@@ -7,7 +7,7 @@
 
 import Alamofire
 
-final class RecentlyPlacesNetworkManager {
+enum RecentlyPlacesNetworkManager {
     private enum Endpoints {
         static let getRecentlyPlacesForPersonWithId = GlobalNetworkConstants.host + "/people/recentlyPlaces/"
         static let deleteRecentlyPlacesForPersonWithId = GlobalNetworkConstants.host + "/people/recentlyPlaces"

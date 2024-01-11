@@ -8,7 +8,7 @@
 import Alamofire
 import UIKit
 
-final class RegistrationAuthManager {
+enum RegistrationAuthManager {
     private enum Endpoints {
         static let makeRegistrationEndpoint: String = GlobalNetworkConstants.host + "/people/new"
     }

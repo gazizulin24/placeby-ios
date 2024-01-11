@@ -11,7 +11,15 @@ final class UsernameProfileCell: UITableViewCell {
     func configure(username: String, sex: String) {
         print("username: ", username)
         usernameLabel.text = "Здравствуйте, \(username)!"
-
+        print(sex)
+        switch sex {
+        case "male":
+            infoView.backgroundColor = UIColor(cgColor: CGColor(red: 0 / 255, green: 0 / 255, blue: 255 / 255, alpha: 0.2))
+        case "female":
+            infoView.backgroundColor = UIColor(cgColor: CGColor(red: 255 / 255, green: 0 / 255, blue: 255 / 255, alpha: 0.2))
+        default:
+            infoView.backgroundColor = UIColor(cgColor: CGColor(red: 54 / 255, green: 54 / 255, blue: 54 / 255, alpha: 0.2))
+        }
         sexLabel.text = genders[sex]
     }
 

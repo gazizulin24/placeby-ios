@@ -9,28 +9,26 @@ import UIKit
 
 final class PlaceTableView: UITableView {
     // MARK: - Init
-    
+
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         initialize()
     }
-    
+
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
 
 // MARK: - Private methods
+
 private extension PlaceTableView {
-    
-    func initialize(){
+    func initialize() {
         separatorColor = .clear
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
-        
-        
+
         register(ImagesCell.self, forCellReuseIdentifier: String(describing: ImagesCell.self))
         register(PlaceCategoriesCell.self, forCellReuseIdentifier: String(describing: PlaceCategoriesCell.self))
         register(PlaceDescriptionCell.self, forCellReuseIdentifier: String(describing: PlaceDescriptionCell.self))

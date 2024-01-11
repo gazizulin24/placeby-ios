@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         let window = UIWindow(windowScene: windowScene)
-        if UserDefaults.standard.integer(forKey: "placesNearbyRange") == 0{
+        if UserDefaults.standard.integer(forKey: "placesNearbyRange") == 0 {
             UserDefaults.standard.setValue(5, forKey: "placesNearbyRange")
         }
         if UserDefaults.standard.bool(forKey: "isLogged") {

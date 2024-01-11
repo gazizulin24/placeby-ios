@@ -15,7 +15,6 @@ final class PlaceTypeCell: UICollectionViewCell {
         placeTypeButton.sizeToFit()
         placeType = data
         placeTypeButton.addTarget(self, action: #selector(selectPlaceType), for: .touchUpInside)
-        
     }
 
     // MARK: - Init
@@ -41,7 +40,6 @@ final class PlaceTypeCell: UICollectionViewCell {
         button.setTitleColor(.black, for: .normal)
         button.setTitleColor(.darkGray, for: .highlighted)
 
-        
         button.tintColor = UIColor(cgColor: CGColor(red: 231 / 255, green: 191 / 255, blue: 39 / 255, alpha: 1))
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.adjustsFontSizeToFitWidth = true

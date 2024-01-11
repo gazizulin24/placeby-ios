@@ -33,7 +33,7 @@ final class LoadingViewController: UIViewController {
         let label = UILabel()
         label.font = .systemFont(ofSize: 10)
         label.textAlignment = .center
-        label.text = "Рассматриваем ваши ответы.."
+        label.text = "Подбираем лучшее место.."
         label.textColor = .white
 
         return label
@@ -59,18 +59,19 @@ private extension LoadingViewController {
     }
 
     func createLabels() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
-            taskLabel.text = "Заглядываем в базу мест.."
-        }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [self] in
-            taskLabel.text = "Подбираем лучшее место.."
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [self] in
-            if let viewController = parent as? FindPlacePageViewController {
-                viewController.dismiss(animated: true)
-                NotificationCenter.default.post(Notification(name: Notification.Name("findPlace")))
+        AlgorithmNetworkManager.findPlace { responseEntity  in
+            if let place = responseEntity{
+                print(place.nameOfPlace)
+                UserDefaults.standard.setValue(place.id, forKey: "placeId")
+                if let viewController = self.parent as? FindPlacePageViewController {
+                    viewController.dismiss(animated: true)
+                    NotificationCenter.default.post(Notification(name: Notification.Name("findPlace")))
+                } else {
+                    print("not a FindPlacePageViewController")
+                }
+            } else{
+                print("algorithm response error")
             }
         }
     }

@@ -8,7 +8,6 @@
 import UIKit
 
 class SimilarPlaceSingleCell: UITableViewCell {
-
     // MARK: - Public
 
     func configure(with place: GetAllPlacesRequestResponseSingleEntity) {
@@ -16,6 +15,7 @@ class SimilarPlaceSingleCell: UITableViewCell {
         placeNameLabel.text = place.nameOfPlace
         setImageByUrl(url: place.photos.first!.photoURL)
     }
+
     var placeId = 0
 
     // MARK: - Init
@@ -34,7 +34,6 @@ class SimilarPlaceSingleCell: UITableViewCell {
 
     private let placeImageView: UIImageView = {
         let imageView = UIImageView()
-
 
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 10
@@ -61,8 +60,6 @@ private extension SimilarPlaceSingleCell {
     func initialize() {
         contentView.backgroundColor = .white
 
-        
-
         contentView.addSubview(placeImageView)
 
         placeImageView.snp.makeConstraints { make in
@@ -82,8 +79,6 @@ private extension SimilarPlaceSingleCell {
         }
     }
 
-    
-    
     func setImageByUrl(url: String) {
         PhotosNetworkManager.loadPhoto(url: url) { [self] responseData in
             if let data = responseData {

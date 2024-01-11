@@ -29,6 +29,7 @@ final class RecentlyPlaceCell: UITableViewCell {
     }
 
     // MARK: - Private properties
+
     private var placeId = 0
 
     private let dataView: UIView = {
@@ -37,7 +38,7 @@ final class RecentlyPlaceCell: UITableViewCell {
         view.backgroundColor = UIColor(cgColor: CGColor(red: 250 / 255, green: 241 / 255, blue: 204 / 255, alpha: 1))
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
-        
+
         return view
     }()
 
@@ -71,7 +72,7 @@ private extension RecentlyPlaceCell {
         contentView.backgroundColor = .white
 
         dataView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openPlace)))
-        
+
         contentView.addSubview(dataView)
 
         dataView.snp.makeConstraints { make in
@@ -97,12 +98,12 @@ private extension RecentlyPlaceCell {
         }
     }
 
-    @objc func openPlace(){
+    @objc func openPlace() {
         UserDefaults.standard.setValue(placeId, forKey: "placeId")
-        
+
         NotificationCenter.default.post(name: Notification.Name("findPlace"), object: nil)
     }
-    
+
     func setImageByUrl(url: String) {
         PhotosNetworkManager.loadPhoto(url: url) { [self] responseData in
             if let data = responseData {

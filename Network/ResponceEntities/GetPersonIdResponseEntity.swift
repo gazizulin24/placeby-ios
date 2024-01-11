@@ -7,6 +7,6 @@
 
 import Foundation
 
- struct GetPersonIdResponseEntity: Decodable {
+struct GetPersonIdResponseEntity: Decodable {
     let userId: Int
 }

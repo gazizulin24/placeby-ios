@@ -8,7 +8,6 @@
 import UIKit
 
 final class MapPlaceCell: UICollectionViewCell {
-
     // MARK: - Public
 
     func configure(with place: GetAllPlacesRequestResponseSingleEntity) {
@@ -17,6 +16,7 @@ final class MapPlaceCell: UICollectionViewCell {
         setImageByUrl(url: place.photos.first!.photoURL)
         self.place = place
     }
+
     var placeId = 0
 
     // MARK: - Init
@@ -25,7 +25,6 @@ final class MapPlaceCell: UICollectionViewCell {
         super.init(frame: frame)
         initialize()
     }
-    
 
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
@@ -33,12 +32,11 @@ final class MapPlaceCell: UICollectionViewCell {
     }
 
     // MARK: - Private properties
-    
-    private var place:GetAllPlacesRequestResponseSingleEntity!
+
+    private var place: GetAllPlacesRequestResponseSingleEntity!
 
     private let placeImageView: UIImageView = {
         let imageView = UIImageView()
-
 
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 10
@@ -73,7 +71,7 @@ private extension MapPlaceCell {
             make.width.equalToSuperview().multipliedBy(0.9)
             make.height.equalTo(150)
         }
-        
+
         placeImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(focusOnPlace)))
 
         contentView.addSubview(placeNameLabel)
@@ -85,10 +83,8 @@ private extension MapPlaceCell {
             make.height.equalTo(20)
             make.bottom.equalToSuperview().inset(15)
         }
-        
-        
     }
-    
+
     func setImageByUrl(url: String) {
         PhotosNetworkManager.loadPhoto(url: url) { [self] responseData in
             if let data = responseData {
@@ -98,8 +94,8 @@ private extension MapPlaceCell {
             }
         }
     }
-    
-    @objc func focusOnPlace(){
+
+    @objc func focusOnPlace() {
         print(place)
         NotificationCenter.default.post(name: Notification.Name("focusOnPlaceFromBottomView"), object: place)
     }

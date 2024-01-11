@@ -8,7 +8,6 @@
 import UIKit
 
 class FavouritePlaceCell: UITableViewCell {
-
     // MARK: - Public
 
     func configure(with place: GetAllPlacesRequestResponseSingleEntity) {
@@ -16,6 +15,7 @@ class FavouritePlaceCell: UITableViewCell {
         placeNameLabel.text = place.nameOfPlace
         setImageByUrl(url: place.photos.first!.photoURL)
     }
+
     var placeId = 0
 
     // MARK: - Init
@@ -34,7 +34,6 @@ class FavouritePlaceCell: UITableViewCell {
 
     private let placeImageView: UIImageView = {
         let imageView = UIImageView()
-
 
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 10
@@ -79,7 +78,7 @@ private extension FavouritePlaceCell {
             make.bottom.equalToSuperview().inset(15)
         }
     }
-    
+
     func setImageByUrl(url: String) {
         PhotosNetworkManager.loadPhoto(url: url) { [self] responseData in
             if let data = responseData {

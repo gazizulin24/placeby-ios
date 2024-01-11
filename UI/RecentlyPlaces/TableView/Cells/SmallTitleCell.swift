@@ -39,8 +39,6 @@ final class SmallTitleCell: UITableViewCell {
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
-    
-    
 }
 
 // MARK: - Private methods

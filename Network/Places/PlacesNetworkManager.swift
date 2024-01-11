@@ -7,7 +7,7 @@
 
 import Alamofire
 
-final class PlacesNetworkManager {
+enum PlacesNetworkManager {
     private enum Endpoints {
         static let getAllPlacesEndpoint: String = GlobalNetworkConstants.host + "/places"
         static let getAllPlacesByTypeEndpoint: String = GlobalNetworkConstants.host + "/places/type/"
@@ -19,7 +19,7 @@ final class PlacesNetworkManager {
 
     static func getAllPlacesRequest(completion: @escaping (GetAllPlacesRequestResponseEntity?) -> Void) {
         AF.request(Endpoints.getAllPlacesEndpoint, method: .get, encoding: JSONEncoding.default).responseDecodable(of: GetAllPlacesRequestResponseEntity.self) { response in
-            
+
             completion(response.value)
         }
     }
@@ -27,23 +27,23 @@ final class PlacesNetworkManager {
     static func getAllPlacesByTypeRequest(_ type: String, completion: @escaping (GetAllPlacesRequestResponseEntity?) -> Void) {
         let url = Endpoints.getAllPlacesByTypeEndpoint + type
         AF.request(url, method: .get, encoding: JSONEncoding.default).responseDecodable(of: GetAllPlacesRequestResponseEntity.self) { response in
-            
+
             completion(response.value)
         }
     }
-    
-    static func getPlacebyIdRequest(_ id:Int, completion: @escaping (GetAllPlacesRequestResponseSingleEntity?) -> ()){
+
+    static func getPlacebyIdRequest(_ id: Int, completion: @escaping (GetAllPlacesRequestResponseSingleEntity?) -> Void) {
         let url = Endpoints.getAllPlacesEndpoint + "/" + String(id)
-        
+
         AF.request(url, method: .get, encoding: JSONEncoding.default).responseDecodable(of: GetAllPlacesRequestResponseSingleEntity.self) { response in
             completion(response.value)
         }
     }
-    
-    static func isPlaceIsFavouriteForUser(userId:Int, placeId:Int, completion: @escaping (IsPlaceIsFavouriteResponseEntity?) -> ()){
+
+    static func isPlaceIsFavouriteForUser(userId: Int, placeId: Int, completion: @escaping (IsPlaceIsFavouriteResponseEntity?) -> Void) {
         let parametrs: Parameters = [
             "personId": userId,
-            "placeId": placeId
+            "placeId": placeId,
         ]
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -54,32 +54,28 @@ final class PlacesNetworkManager {
             completion(response.value)
         }
     }
-    
-    
-    static func ratePlace(placeId:Int, rating:Int){
+
+    static func ratePlace(placeId: Int, rating: Int) {
         let parametrs: Parameters = [
             "rating": rating,
         ]
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
         ]
-        
+
         let url = Endpoints.postRatePlace + String(placeId)
 
-        AF.request(url, method: .post, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response() { result in
+        AF.request(url, method: .post, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response { result in
             print(result)
         }
-        
     }
-    
-    static func getAllPlaceTimetable(placeId:Int, completion: @escaping (FullTimetableResponseEntity?) -> ()){
-        
+
+    static func getAllPlaceTimetable(placeId: Int, completion: @escaping (FullTimetableResponseEntity?) -> Void) {
         let url = Endpoints.getFullTimetable + String(placeId)
-        
+
         AF.request(url, method: .get, encoding: JSONEncoding.default).responseDecodable(of: FullTimetableResponseEntity.self) { response in
             print(response)
             completion(response.value)
         }
-        
     }
 }

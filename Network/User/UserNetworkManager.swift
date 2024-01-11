@@ -7,7 +7,7 @@
 
 import Alamofire
 
-final class UserNetworkManager {
+enum UserNetworkManager {
     private enum Endpoints {
         static let getUserEndpoint: String = GlobalNetworkConstants.host + "/people/"
         static let userIdByPhoneNumEndpoint: String = GlobalNetworkConstants.host + "/people/userId"
@@ -29,28 +29,26 @@ final class UserNetworkManager {
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
         ]
-        
-       
 
         AF.request(Endpoints.userIdByPhoneNumEndpoint, method: .post, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).responseDecodable(of: GetPersonIdResponseEntity.self) { response in
             completion(response.value)
         }
     }
-    
-    static func makeUpdateUserRequest(gender:String, name:String) {
+
+    static func makeUpdateUserRequest(gender: String, name: String) {
         let parametrs: Parameters = [
             "name": name,
             "gender": gender,
-            "dateOfBirth": UserDefaults.standard.string(forKey: "userDateOfBirth") ?? ""
+            "dateOfBirth": UserDefaults.standard.string(forKey: "userDateOfBirth") ?? "",
         ]
-        
+
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
         ]
-        
+
         let url = Endpoints.updateUserDataEndpoint + String(UserDefaults.standard.integer(forKey: "userId"))
 
-        AF.request(url, method: .patch, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response() { response in
+        AF.request(url, method: .patch, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response { response in
             print(response)
         }
     }

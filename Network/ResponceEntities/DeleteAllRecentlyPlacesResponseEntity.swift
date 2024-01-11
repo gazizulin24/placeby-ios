@@ -9,6 +9,6 @@ import Foundation
 
 // MARK: - DeleteResponseEntity
 
- struct DeleteAllRecentlyPlacesResponseEntity: Codable {
+struct DeleteAllRecentlyPlacesResponseEntity: Codable {
     let delete: String
 }

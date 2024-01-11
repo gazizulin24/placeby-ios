@@ -66,10 +66,10 @@ final class RecentlyPlacesViewController: UIViewController {
 private extension RecentlyPlacesViewController {
     func initialize() {
         view.backgroundColor = .white
-        
+
         navigationController?.isNavigationBarHidden = true
-        //configNavigation()
-        
+        // configNavigation()
+
         setupNotifications()
 
         view.addSubview(tableView)
@@ -82,8 +82,8 @@ private extension RecentlyPlacesViewController {
 
         refreshRecentlyPlacesAction()
     }
-    
-    func setupNotifications(){
+
+    func setupNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(clearRecentlyPlaces), name: Notification.Name("clearRecentlyPlaces"), object: nil)
     }
 
@@ -138,7 +138,7 @@ private extension RecentlyPlacesViewController {
                 data = [.header(TextConstants.headerCellText)]
 
                 for place in response.recentlyPlaces {
-                    data.append(.place(RecentlyPlaceData(name: place.nameOfPlace, imageUrl: place.photos.first!.photoURL, id:place.id)))
+                    data.append(.place(RecentlyPlaceData(name: place.nameOfPlace, imageUrl: place.photos.first!.photoURL, id: place.id)))
                 }
 
                 if data.count == 1 {
@@ -173,7 +173,7 @@ extension RecentlyPlacesViewController: UITableViewDataSource {
         case let .place(recentlyPlace):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecentlyPlaceCell.self)) as! RecentlyPlaceCell
 
-            cell.configure(with: RecentlyPlaceData(name: recentlyPlace.name, imageUrl: recentlyPlace.imageUrl, id:recentlyPlace.id))
+            cell.configure(with: RecentlyPlaceData(name: recentlyPlace.name, imageUrl: recentlyPlace.imageUrl, id: recentlyPlace.id))
 
             return cell
         case let .title(text):

@@ -7,7 +7,7 @@
 import Foundation
 
 // MARK: - IsPlaceIsFavouriteResponseEntity
+
 struct IsPlaceIsFavouriteResponseEntity: Codable {
     let isFavourite: Bool
 }
-

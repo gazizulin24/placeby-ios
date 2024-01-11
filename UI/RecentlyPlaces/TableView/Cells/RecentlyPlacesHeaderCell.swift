@@ -45,14 +45,14 @@ final class RecentlyPlacesHeaderCell: UITableViewCell {
         label.textAlignment = .center
         return label
     }()
-    
-    lazy private var deleteRecentlyPlacesButton:UIButton = {
+
+    private lazy var deleteRecentlyPlacesButton: UIButton = {
         let button = UIButton()
-        
+
         button.setImage(UIImage(systemName: "xmark")?.withTintColor(.red, renderingMode: .alwaysOriginal), for: .normal)
-        
+
         button.addTarget(self, action: #selector(sendRemoveRecentlyPlacesNotification), for: .touchUpInside)
-        
+
         return button
     }()
 }
@@ -68,17 +68,16 @@ private extension RecentlyPlacesHeaderCell {
             make.centerX.centerY.top.bottom.equalToSuperview()
             make.height.equalTo(80)
         }
-        
+
         contentView.addSubview(deleteRecentlyPlacesButton)
-        
+
         deleteRecentlyPlacesButton.snp.makeConstraints { make in
             make.centerY.trailing.equalToSuperview()
-            make.size.equalTo(50)}
+            make.size.equalTo(50)
+        }
     }
-    
-    
-    @objc func sendRemoveRecentlyPlacesNotification(){
+
+    @objc func sendRemoveRecentlyPlacesNotification() {
         NotificationCenter.default.post(name: Notification.Name("clearRecentlyPlaces"), object: nil)
     }
-    
 }

@@ -11,11 +11,10 @@ import UIKit
 import YandexMapsMobile
 
 final class PlaceViewController: UIViewController {
-    
     // MARK: - Public
-    
-    func configureWithId(_ id:Int){
-        PlacesNetworkManager.getPlacebyIdRequest(id) {[self] responseEntity in
+
+    func configureWithId(_ id: Int) {
+        PlacesNetworkManager.getPlacebyIdRequest(id) { [self] responseEntity in
             if let place = responseEntity {
                 placeDataLoaded()
                 self.place = place
@@ -23,13 +22,11 @@ final class PlaceViewController: UIViewController {
                 placeLabel.text = place.nameOfPlace
                 print(placeLabel.text!)
                 navigationItem.titleView = placeLabel
-                
+
                 checkIsPlaceIsFav(place.id)
-                
+
                 data = []
-                
-                
-                
+
                 data.append(.images(place.photos))
                 data.append(.description(place))
                 data.append(.map(place))
@@ -38,22 +35,17 @@ final class PlaceViewController: UIViewController {
                 data.append(.similar(place))
                 data.append(.report(place.nameOfPlace))
                 data.append(.smallLabel(""))
-                
 
-                
                 placeTableView.reloadData()
-                
-            } else{
+
+            } else {
                 print("error getPlacebyIdRequest")
             }
         }
     }
-    
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         initialization()
     }
 
@@ -74,24 +66,24 @@ final class PlaceViewController: UIViewController {
     }
 
     // MARK: - Private properties
-    
-    private var data:[PlaceTableViewCellType] = []
+
+    private var data: [PlaceTableViewCellType] = []
 
     private var isLiked = false
 
-    private var place:GetAllPlacesRequestResponseSingleEntity!
-    
-    lazy private var placeTableView:PlaceTableView = {
+    private var place: GetAllPlacesRequestResponseSingleEntity!
+
+    private lazy var placeTableView: PlaceTableView = {
         let tableView = PlaceTableView()
-        
+
         tableView.backgroundColor = .white
-        
+
         tableView.dataSource = self
         tableView.delegate = self
-        
+
         return tableView
     }()
-    
+
     private let indicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
 
@@ -102,17 +94,16 @@ final class PlaceViewController: UIViewController {
         return indicator
     }()
 
-    private let placeLabel:UILabel = {
+    private let placeLabel: UILabel = {
         let label = UILabel()
-        
+
         label.font = .systemFont(ofSize: UIConstants.placeLabelFontSize, weight: .bold)
         label.adjustsFontSizeToFitWidth = true
         label.textColor = .black
         label.textAlignment = .center
-        
+
         return label
     }()
-
 }
 
 private extension PlaceViewController {
@@ -134,33 +125,31 @@ private extension PlaceViewController {
         indicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
-        
+
         placeTableView.isHidden = true
-        
+
         view.addSubview(placeTableView)
-        
+
         placeTableView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.top.equalTo(view.snp.topMargin)
             make.width.bottom.equalToSuperview()
         }
-        
     }
-    
-    func checkIsPlaceIsFav(_ placeId:Int){
+
+    func checkIsPlaceIsFav(_ placeId: Int) {
         let userId = UserDefaults.standard.integer(forKey: "userId")
         PlacesNetworkManager.isPlaceIsFavouriteForUser(userId: userId, placeId: placeId) { [self] responseEntity in
             if let response = responseEntity {
                 setLikedButton(response.isFavourite)
-            } else{
+            } else {
                 print("error isPlaceIsFavouriteForUser")
                 setLikedButton(false)
             }
-            
         }
     }
-    
-    func placeDataLoaded(){
+
+    func placeDataLoaded() {
         indicator.stopAnimating()
         indicator.isHidden = true
         placeTableView.isHidden = false
@@ -177,11 +166,10 @@ private extension PlaceViewController {
     }
 
     @objc func shareButtonPressed() {
-        
         let text = "Зацени \(place.nameOfPlace) на placeby! \(place.photos.first!.photoURL)"
-        
+
         let ac = UIActivityViewController(activityItems: [text], applicationActivities: nil)
-        
+
         present(ac, animated: true)
     }
 
@@ -192,7 +180,7 @@ private extension PlaceViewController {
 
         return items
     }
-    
+
     func setLikedButton(_ isActive: Bool) {
         isLiked = isActive
         if isLiked {
@@ -212,7 +200,7 @@ private extension PlaceViewController {
             FavouritePlacesNetworkManager.makePlaceFavouriteForPerson(placeId: place.id, personId: userId)
             sender.image = ImageConstants.likedImage
             isLiked = true
-            
+
             let alert = UIAlertController(title: "Место добавлено в любимые!", message: "Хотите перейти ко всем любимым местам?", preferredStyle: .alert)
 
             alert.addAction(UIAlertAction(title: "Перейти", style: .default, handler: { _ in
@@ -229,77 +217,75 @@ private extension PlaceViewController {
             navigationController?.navigationBar.isHidden = true
         }
     }
-    
-    @objc func openSchedule(){
+
+    @objc func openSchedule() {
         NotificationCenter.default.post(Notification(name: Notification.Name("openSchedule")))
     }
-
 }
 
 // MARK: - UITableViewDataSource
-extension PlaceViewController:UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
+extension PlaceViewController: UITableViewDataSource {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         return data.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let index = indexPath.row
-        
+
         switch data[index] {
-        case .images(let images):
+        case let .images(images):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ImagesCell.self)) as! ImagesCell
             cell.configure(images: images)
-            
+
             return cell
-        case .description(let data):
+        case let .description(data):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceDescriptionCell.self), for: indexPath) as! PlaceDescriptionCell
-            
-            cell.configure(with:data)
-            
+
+            cell.configure(with: data)
+
             return cell
-            
-        case .categories(let place):
+
+        case let .categories(place):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceCategoriesCell.self), for: indexPath) as! PlaceCategoriesCell
-            
+
             cell.configure(with: place)
-            
+
             return cell
-        case .map(let place):
+        case let .map(place):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceMapCell.self), for: indexPath) as! PlaceMapCell
-            
+
             cell.configure(with: place)
-            
+
             return cell
-        case .similar(let place):
+        case let .similar(place):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SimilarPlacesCell.self), for: indexPath) as! SimilarPlacesCell
-            
+
             cell.configure(with: place)
-            
+
             return cell
-        case .report(let placeName):
+        case let .report(placeName):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: ReportPlaceCell.self), for: indexPath) as! ReportPlaceCell
-            
+
             cell.configure(with: placeName)
-            
+
             return cell
-        case .smallLabel(let text):
+        case let .smallLabel(text):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SmallLabelCell.self), for: indexPath) as! SmallLabelCell
-            
+
             cell.configure(with: text)
-            
+
             return cell
-        case .schedule(let place):
+        case let .schedule(place):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlaceScheduleCell.self), for: indexPath) as! PlaceScheduleCell
-            
+
             cell.configure(with: place)
-            
-            
+
             cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openSchedule)))
             return cell
         }
     }
 }
-
 
 // MARK: - UITableViewDelegate
 
@@ -308,8 +294,7 @@ extension PlaceViewController: UITableViewDelegate {
         cell.alpha = 0
 
         UIView.animate(withDuration: 0.3) {
-                cell.alpha = 1
-            }
-        
+            cell.alpha = 1
+        }
     }
 }

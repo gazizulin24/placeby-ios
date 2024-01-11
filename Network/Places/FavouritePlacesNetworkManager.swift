@@ -7,16 +7,14 @@
 
 import Alamofire
 
-final class FavouritePlacesNetworkManager {
+enum FavouritePlacesNetworkManager {
     private enum Endpoints {
         static let getFavouritePlacesForPerson = GlobalNetworkConstants.host + "/people/favPlaces/"
         static let addPlaceToFavouriteEndpoint = GlobalNetworkConstants.host + "/people/favPlaces"
         static let deleteFavouritePlaceForUser = GlobalNetworkConstants.host + "/people/favPlaces"
     }
-    
-    
-    static func getFavouritePlacesForUser(id:Int, completion: @escaping (GetFavouritePlacesResponseEntity?) -> ()) {
-        
+
+    static func getFavouritePlacesForUser(id: Int, completion: @escaping (GetFavouritePlacesResponseEntity?) -> Void) {
         let url = Endpoints.getFavouritePlacesForPerson + String(id)
 
         AF.request(url, method: .get, encoding: JSONEncoding.default).responseDecodable(of: GetFavouritePlacesResponseEntity.self) { response in
@@ -24,9 +22,8 @@ final class FavouritePlacesNetworkManager {
             completion(response.value)
         }
     }
-    
-    
-    static func makePlaceFavouriteForPerson(placeId:Int, personId:Int) {
+
+    static func makePlaceFavouriteForPerson(placeId: Int, personId: Int) {
         let parametrs: Parameters = [
             "personId": personId,
             "placeId": placeId,
@@ -35,14 +32,12 @@ final class FavouritePlacesNetworkManager {
             "Content-Type": "application/json",
         ]
 
-        AF.request(Endpoints.addPlaceToFavouriteEndpoint, method: .post, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response() { result in
+        AF.request(Endpoints.addPlaceToFavouriteEndpoint, method: .post, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response { result in
             print(result)
         }
-        
     }
-    
-    
-    static func deleteFavouritePlaceForUser(placeId:Int, personId:Int) {
+
+    static func deleteFavouritePlaceForUser(placeId: Int, personId: Int) {
         let parametrs: Parameters = [
             "personId": personId,
             "placeId": placeId,
@@ -51,9 +46,8 @@ final class FavouritePlacesNetworkManager {
             "Content-Type": "application/json",
         ]
 
-        AF.request(Endpoints.deleteFavouritePlaceForUser, method: .delete, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response() { result in
+        AF.request(Endpoints.deleteFavouritePlaceForUser, method: .delete, parameters: parametrs, encoding: JSONEncoding.default, headers: headers).response { result in
             print(result)
         }
-        
     }
 }

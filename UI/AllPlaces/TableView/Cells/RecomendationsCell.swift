@@ -11,13 +11,13 @@ import UIKit
 final class RecomendationsCell: UITableViewCell {
     // MARK: - Public
 
-    func configure(with recomendationsData:RecomedationsData) {
+    func configure(with recomendationsData: RecomedationsData) {
         if recomendationsData.count != 3 { return }
-        
+
         leftBigViewRecomendationsData = recomendationsData[0]
         rightTopViewRecomendationsData = recomendationsData[1]
         rightBottomViewRecomendationsData = recomendationsData[2]
-        
+
         fillView(leftBigView, recomendationsData[0])
         fillView(rightTopView, recomendationsData[1])
         fillView(rightBottomView, recomendationsData[2])
@@ -49,10 +49,10 @@ final class RecomendationsCell: UITableViewCell {
 
     // MARK: - Private properties
 
-    private var leftBigViewRecomendationsData:RecomendationsSingleData!
-    private var rightTopViewRecomendationsData:RecomendationsSingleData!
-    private var rightBottomViewRecomendationsData:RecomendationsSingleData!
-    
+    private var leftBigViewRecomendationsData: RecomendationsSingleData!
+    private var rightTopViewRecomendationsData: RecomendationsSingleData!
+    private var rightBottomViewRecomendationsData: RecomendationsSingleData!
+
     private let itemsView: UIView = {
         let view = UIView()
         return view
@@ -128,10 +128,8 @@ private extension RecomendationsCell {
             make.leading.equalTo(contentView.snp.centerX).offset(UIConstants.itemsInViewOffset)
         }
     }
-    
-    
-    
-    func fillView(_ view:UIView, _ data: RecomendationsSingleData) {
+
+    func fillView(_ view: UIView, _ data: RecomendationsSingleData) {
         let imageView = UIImageView()
 
         imageView.image = UIImage(named: data.imageName)
@@ -144,9 +142,9 @@ private extension RecomendationsCell {
         imageView.snp.makeConstraints { make in
             make.size.equalToSuperview()
         }
-        
+
         let label = UILabel()
-        
+
         label.font = .systemFont(ofSize: UIConstants.labelFontSize, weight: .bold)
         label.backgroundColor = .white
         label.textAlignment = .center
@@ -154,18 +152,16 @@ private extension RecomendationsCell {
         label.layer.cornerRadius = UIConstants.labelCornerRadius
         label.text = data.title
         label.clipsToBounds = true
-        
+
         view.addSubview(label)
-        
+
         label.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(UIConstants.labelBottomInset)
             make.width.equalToSuperview().multipliedBy(0.9)
             make.height.equalTo(UIConstants.labelHeight)
         }
-        
     }
-    
 
     @objc func bigButtonAction() {
         print("bigButtonAction")

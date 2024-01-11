@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-enum MapPlacesTypesCollectionViewCellType{
+enum MapPlacesTypesCollectionViewCellType {
     case me
     case placeType(String, PlacesToFocusType)
 }

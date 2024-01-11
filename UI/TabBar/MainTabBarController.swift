@@ -9,46 +9,46 @@ import CoreLocation
 import UIKit
 
 final class MainTabBarController: UITabBarController {
-    
     // MARK: - Private properties
 
-    lazy private var closeScheduleGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(closeSchedule))
-    lazy private var closeRateViewGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(closeRateView))
-    
+    private lazy var closeScheduleGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(closeSchedule))
+    private lazy var closeRateViewGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(closeRateView))
+
     private let mainTabBar = MainTabBar()
     private let locationManager = CLLocationManager()
     private var prevSelectedIndex = 0
-    private let dimView:UIView = {
+    private let dimView: UIView = {
         let view = UIView(frame: UIScreen.main.bounds)
-        
+
         view.backgroundColor = .black
         view.alpha = 0
-        
+
         return view
     }()
-    private let ratingView:RatingView = {
+
+    private let ratingView: RatingView = {
         let view = RatingView()
-        
+
         view.alpha = 0
-        
+
         return view
     }()
-    
-    private let scheduleView:ScheduleView = {
+
+    private let scheduleView: ScheduleView = {
         let view = ScheduleView()
-        
+
         view.alpha = 0
-        
+
         return view
     }()
-    
+
     // MARK: - Private constants
-    
+
     private enum UIConstants {
-        static let scheduleViewHeight:CGFloat = 310
-        static let scheduleViewWidth:CGFloat = 300
-        static let ratingViewHeight:CGFloat = 160
-        static let ratingViewWidth:CGFloat = 300
+        static let scheduleViewHeight: CGFloat = 310
+        static let scheduleViewWidth: CGFloat = 300
+        static let ratingViewHeight: CGFloat = 160
+        static let ratingViewWidth: CGFloat = 300
     }
 
     // MARK: - View Lifecycle
@@ -86,10 +86,10 @@ private extension MainTabBarController {
         setupNotifications()
 
         viewControllers = getViewControllers()
-        
+
         selectedIndex = 0
         
-        
+        getUserData()
     }
 
     func getViewControllers() -> [UIViewController] {
@@ -99,7 +99,6 @@ private extension MainTabBarController {
         allPlacesViewController.tabBarItem.image = UIImage(systemName: "magazine")
         allPlacesViewController.tabBarItem.selectedImage = UIImage(systemName: "magazine.fill")
 
-        
         let placesMapViewController = UINavigationController(rootViewController: PlacesMapViewController())
 
         placesMapViewController.tabBarItem.title = "Карта"
@@ -123,6 +122,18 @@ private extension MainTabBarController {
         spacerViewController.tabBarItem.isEnabled = false
 
         return [allPlacesViewController, placesMapViewController, spacerViewController, recentlyPlacesViewController, profileViewController]
+    }
+    
+    func getUserData(){
+        UserNetworkManager.makeGetPersonRequest(id: UserDefaults.standard.integer(forKey: "userId")) { responseEntity in
+            if let response = responseEntity {
+                UserDefaults.standard.setValue(response.name, forKey: "username")
+                UserDefaults.standard.setValue(response.gender, forKey: "userGender")
+                UserDefaults.standard.setValue(response.dateOfBirth, forKey: "userDateOfBirth")
+            } else {
+                print("ошибка makeGetPersonRequest")
+            }
+        }
     }
 }
 
@@ -153,7 +164,7 @@ extension MainTabBarController: CLLocationManagerDelegate {
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
 
-        //print("Широта: \(latitude), Долгота: \(longitude)")
+        // print("Широта: \(latitude), Долгота: \(longitude)")
         UserDefaults.standard.setValue(latitude, forKey: "userLatitude")
         UserDefaults.standard.setValue(longitude, forKey: "userLongitude")
         NotificationCenter.default.post(name: Notification.Name("userLocationUpdated"), object: nil)
@@ -185,56 +196,53 @@ private extension MainTabBarController {
         NotificationCenter.default.addObserver(self, selector: #selector(openProfileSettingsPage), name: Notification.Name("openProfileSettingsPage"), object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(openFeedback), name: Notification.Name("openFeedback"), object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(openSchedule), name: Notification.Name("openSchedule"), object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(closeSchedule), name: Notification.Name("closeSchedule"), object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(ratePlace), name: Notification.Name("ratePlace"), object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(sentRating(_:)), name: Notification.Name("sendRatePlace"), object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(openAllPlaces), name: Notification.Name("openAllPlaces"), object: nil)
     }
-    
-    @objc func ratePlace(){
-        
+
+    @objc func ratePlace() {
         dimView.addGestureRecognizer(closeRateViewGestureRecognizer)
-        
+
         view.addSubview(dimView)
-        
+
         view.addSubview(ratingView)
         ratingView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(UIConstants.ratingViewWidth)
             make.height.equalTo(UIConstants.ratingViewHeight)
         }
-        
+
         UIView.animate(withDuration: 0.3) {
             self.dimView.alpha = 0.3
             self.ratingView.alpha = 1
         }
-        
     }
-    
-    @objc func sentRating(_ sender:Notification){
+
+    @objc func sentRating(_ sender: Notification) {
         let placeId = UserDefaults.standard.integer(forKey: "placeId")
         if let rating = sender.object as? Int {
             print("user rated place \(placeId): ", rating)
-            
+
             PlacesNetworkManager.ratePlace(placeId: placeId, rating: rating)
-            
         }
-        
+
         closeRateView()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
-            if let nc = self.viewControllers?.first as? UINavigationController, let vc = nc.viewControllers.last! as? PlaceViewController{
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            if let nc = self.viewControllers?.first as? UINavigationController, let vc = nc.viewControllers.last! as? PlaceViewController {
                 vc.configureWithId(placeId)
             }
         }
     }
-    
-    @objc func closeRateView(){
+
+    @objc func closeRateView() {
         UIView.animate(withDuration: 0.3) {
             self.dimView.alpha = 0
             self.dimView.removeFromSuperview()
@@ -242,20 +250,16 @@ private extension MainTabBarController {
             self.ratingView.removeFromSuperview()
         }
         dimView.removeGestureRecognizer(closeRateViewGestureRecognizer)
-        
     }
-    
-    @objc func openSchedule(){
+
+    @objc func openSchedule() {
         view.addSubview(dimView)
         dimView.addGestureRecognizer(closeScheduleGestureRecognizer)
-        
-        
+
         let placeId = UserDefaults.standard.integer(forKey: "placeId")
         print(placeId) // Потом тут будет запрос на получение по айди места его расписания
         scheduleView.configure()
-        
-        
-        
+
         view.addSubview(scheduleView)
         scheduleView.snp.makeConstraints { make in
             make.center.equalToSuperview()
@@ -267,8 +271,8 @@ private extension MainTabBarController {
             self.scheduleView.alpha = 1
         }
     }
-    
-    @objc func closeSchedule(){
+
+    @objc func closeSchedule() {
         UIView.animate(withDuration: 0.3) {
             self.dimView.alpha = 0
             self.dimView.removeFromSuperview()
@@ -281,11 +285,10 @@ private extension MainTabBarController {
     @objc func openFeedback() {
         selectedIndex = 4
         prevSelectedIndex = 4
-        
-        
+
         if let viewController = viewControllers?.last! as? UINavigationController {
             let vc = FeedbackViewController()
-            if let placeName = UserDefaults.standard.string(forKey: "placeNameToReport"){
+            if let placeName = UserDefaults.standard.string(forKey: "placeNameToReport") {
                 vc.reportPlaceName(placeName: placeName)
                 UserDefaults.standard.removeObject(forKey: "placeNameToReport")
             }
@@ -297,7 +300,7 @@ private extension MainTabBarController {
         print("openProfileSettingsPage")
         selectedIndex = viewControllers!.count - 1
         prevSelectedIndex = selectedIndex
-        
+
         if let viewController = viewControllers?.last! as? UINavigationController {
             viewController.pushViewController(ProfileSettingsViewController(), animated: true)
         }
@@ -335,9 +338,9 @@ private extension MainTabBarController {
 
         alert.addAction(UIAlertAction(title: "Да", style: .destructive, handler: { _ in
             print("logout")
-                    UserDefaults.standard.setValue(false, forKey: "isLogged")
-                    UserDefaults.standard.setValue(-1, forKey: "userId")
-                    self.navigationController?.setViewControllers([EnterPhoneNumViewController()], animated: true)
+            UserDefaults.standard.setValue(false, forKey: "isLogged")
+            UserDefaults.standard.setValue(-1, forKey: "userId")
+            self.navigationController?.setViewControllers([EnterPhoneNumViewController()], animated: true)
         }))
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: { _ in
             print("cancel logout")
@@ -348,18 +351,19 @@ private extension MainTabBarController {
     @objc func openPlaceOnMap() {
         selectedIndex = 1
         prevSelectedIndex = selectedIndex
-        
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             if let nc = self.viewControllers![1] as? UINavigationController,
-               let vc = nc.viewControllers.first! as? PlacesMapViewController {
+               let vc = nc.viewControllers.first! as? PlacesMapViewController
+            {
                 let placeLatitude = UserDefaults.standard.double(forKey: "placeToOpenLatitude")
                 let placeLongitude = UserDefaults.standard.double(forKey: "placeToOpenLongitude")
                 vc.openPlaceFromPlaceVC(coord: PlaceCoordinates(latitude: placeLatitude, longitude: placeLongitude))
             }
         }
     }
-    
-    @objc func openAllPlaces(){
+
+    @objc func openAllPlaces() {
         selectedIndex = 0
         prevSelectedIndex = 0
     }
@@ -379,14 +383,17 @@ private extension MainTabBarController {
 
         RecentlyPlacesNetworkManager.makePostAddRecentlyPlaceForPersonWithIdRequest(personId: userId, placeId: placeId)
 
-        if let vc = viewControllers?.first as? UINavigationController{
+        if let nc = viewControllers?.first as? UINavigationController {
             let placeVC = PlaceViewController()
-
-            placeVC.configureWithId(placeId)
             
-            vc.pushViewController(placeVC, animated: true)
-            vc.viewControllers = [vc.viewControllers.first!, vc.viewControllers.last!]
+            nc.pushViewController(placeVC, animated: true)
             
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                placeVC.configureWithId(placeId)
+                if nc.viewControllers.count > 1{
+                    nc.viewControllers = [nc.viewControllers.first!, nc.viewControllers.last!]
+                }
+            }
         }
     }
 }
@@ -395,7 +402,7 @@ private extension MainTabBarController {
 
 extension MainTabBarController: UITabBarControllerDelegate {
     func tabBarController(_: UITabBarController, didSelect viewController: UIViewController) {
-        if prevSelectedIndex == selectedIndex{
+        if prevSelectedIndex == selectedIndex {
             if let viewController = viewController as? UINavigationController {
                 viewController.navigationBar.isHidden = true
             }

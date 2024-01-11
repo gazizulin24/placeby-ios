@@ -14,7 +14,7 @@ final class MainTabBar: UITabBar {
     private enum UIConstants {
         static let plusButtonSizeMultiplier: CGFloat = 0.7
         static let plusButtonSize: CGFloat = 44
-        static let plusButtonTopOffset:CGFloat = 3
+        static let plusButtonTopOffset: CGFloat = 3
     }
 
     // MARK: - Private properties
@@ -56,12 +56,12 @@ private extension MainTabBar {
         barTintColor = UIColor(cgColor: CGColor(red: 54 / 255, green: 54 / 255, blue: 54 / 255, alpha: 1))
 
         addSubview(plusButton)
-        
+
         plusButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(self.snp.top).offset(UIConstants.plusButtonTopOffset)
             make.size.equalTo(UIConstants.plusButtonSize)
-            
+
             // make.size.equalTo(self.snp.height).multipliedBy(UIConstants.plusButtonSizeMultiplier)
         }
     }

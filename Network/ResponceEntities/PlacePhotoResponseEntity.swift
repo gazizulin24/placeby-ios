@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - PlacePhotoResponseEntity
 
- struct PlacePhotoResponseEntity: Codable {
+struct PlacePhotoResponseEntity: Codable {
     let id: Int
     let photoURL: String
 

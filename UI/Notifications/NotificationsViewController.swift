@@ -10,15 +10,15 @@ import UIKit
 
 final class NotificationsViewController: UIViewController {
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         initialization()
     }
-    
+
     // MARK: - Private constants
-    
+
     private let notifications: [[String]] = [["Супер обнова 21 декабря добавили сообщения",
                                               "https://youtu.be/dQw4w9WgXcQ?si=51FrMIvCk-k5wHf_"],
                                              ["Согласитесь же норм работает тема",
@@ -46,8 +46,7 @@ final class NotificationsViewController: UIViewController {
                                              ["Супер обнова 21 декабря добавили сообщения",
                                               "https://youtu.be/dQw4w9WgXcQ?si=51FrMIvCk-k5wHf_"],
                                              ["Согласитесь же норм работает тема",
-                                              "https://kinogo.io/56909-slovo-pacana-krov-na-asfalte-1-sezon-2023-123.html"]
-    ]
+                                              "https://kinogo.io/56909-slovo-pacana-krov-na-asfalte-1-sezon-2023-123.html"]]
 
     // MARK: - Private properties
 

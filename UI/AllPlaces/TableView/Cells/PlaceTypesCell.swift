@@ -61,16 +61,15 @@ private extension PlaceTypesCell {
             make.edges.equalToSuperview()
             make.height.equalTo(UIConstants.collectionViewHeight)
         }
-        
+
         configNotifications()
     }
-    
-    
-    func configNotifications(){
+
+    func configNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateCollectionView), name: Notification.Name("allPlacesFilterTypeChanged"), object: nil)
     }
-    
-    @objc func updateCollectionView(){
+
+    @objc func updateCollectionView() {
         collectionView.reloadData()
     }
 }

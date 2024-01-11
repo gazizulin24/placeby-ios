@@ -7,8 +7,8 @@
 
 import Foundation
 
-
 // MARK: - Welcome
+
 struct FullTimetableResponseEntity: Codable {
     let timetable: [Timetable]
     let nameOfPlace: String
@@ -17,10 +17,10 @@ struct FullTimetableResponseEntity: Codable {
     enum CodingKeys: String, CodingKey {
         case timetable, nameOfPlace, isOpen
     }
-    
 }
 
 // MARK: - Timetable
+
 struct Timetable: Codable {
     let dayOfWeek, startTime, endTime: String
 }

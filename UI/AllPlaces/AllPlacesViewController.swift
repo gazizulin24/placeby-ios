@@ -19,9 +19,10 @@ final class AllPlacesViewController: UIViewController {
     }
 
     // MARK: - Private constants
+
     private let recomendationsData = [RecomendationsSingleData(title: "Знаковые места", imageName: "znakovoe-mesto", placesType: "attractions"), RecomendationsSingleData(title: "Парой", imageName: "pair", placesType: "pair"), RecomendationsSingleData(title: "Cемьей", imageName: "family", placesType: "family")]
-    
-    lazy private var data: [AllPlacesTableViewCellType] = {
+
+    private lazy var data: [AllPlacesTableViewCellType] = {
         var data = [AllPlacesTableViewCellType]()
 
         data.append(.placeTypes)
@@ -33,11 +34,11 @@ final class AllPlacesViewController: UIViewController {
 
         return data
     }()
-    
+
     // MARK: - Private constants
-    
+
     private enum UIConstants {
-        static let buttonSize:CGFloat = 50
+        static let buttonSize: CGFloat = 50
     }
 
     // MARK: - Private properties
@@ -49,21 +50,21 @@ final class AllPlacesViewController: UIViewController {
 
         return tableView
     }()
-    
-   lazy private var upButton:UIButton = {
-       let button = UIButton()
-        
-       button.addTarget(self, action: #selector(scrollTableViewUp), for: .touchUpInside)
-        
-       button.setImage(UIImage(systemName: "chevron.up")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
-       button.layer.cornerRadius = UIConstants.buttonSize / 2
-       button.backgroundColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
-       //button.layer.borderWidth = 1
-       
-       button.alpha = 0
-       
-       button.isEnabled = false
-       return button
+
+    private lazy var upButton: UIButton = {
+        let button = UIButton()
+
+        button.addTarget(self, action: #selector(scrollTableViewUp), for: .touchUpInside)
+
+        button.setImage(UIImage(systemName: "chevron.up")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+        button.layer.cornerRadius = UIConstants.buttonSize / 2
+        button.backgroundColor = UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1))
+        // button.layer.borderWidth = 1
+
+        button.alpha = 0
+
+        button.isEnabled = false
+        return button
     }()
 }
 
@@ -76,23 +77,21 @@ private extension AllPlacesViewController {
         view.backgroundColor = .white
 
         setupNotifications()
-        
-        
 
         view.addSubview(tableView)
 
         tableView.snp.makeConstraints { make in
             make.size.equalToSuperview()
         }
-        
+
         view.addSubview(upButton)
-        
+
         upButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
             make.bottom.equalToSuperview().inset(20)
             make.size.equalTo(UIConstants.buttonSize)
         }
-        
+
         UserDefaults.standard.setValue("all", forKey: "allPlacesFilterDBTitle")
         addPlacesToDataByFilter(by: "all")
     }
@@ -106,33 +105,28 @@ private extension AllPlacesViewController {
             filterTableView(with: placeType)
         }
     }
-    
-    @objc func scrollTableViewUp(){
+
+    @objc func scrollTableViewUp() {
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
     }
-    
-    func turnOnUpButton(){
-        
-        if upButton.isEnabled  { return }
-        
-        
-        
+
+    func turnOnUpButton() {
+        if upButton.isEnabled { return }
+
         UIView.animate(withDuration: 0.3) {
             self.upButton.alpha = 1
         }
-        
+
         upButton.isEnabled = true
     }
-    
-    func turnOffUpButton(){
-        
+
+    func turnOffUpButton() {
         if !upButton.isEnabled { return }
-        
+
         UIView.animate(withDuration: 0.3) {
             self.upButton.alpha = 0
-            
         }
-        
+
         upButton.isEnabled = false
     }
 
@@ -154,10 +148,9 @@ private extension AllPlacesViewController {
                 data.removeLast()
                 if let responseEntity = responseEntity {
                     for placeResponse in responseEntity {
-                        
                         data.append(.place(placeResponse))
                     }
-                    
+
                 } else {
                     print("no data")
                 }
@@ -207,7 +200,7 @@ extension AllPlacesViewController: UITableViewDataSource {
 
             cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapToPlace(_:))))
             return cell
-        case .recomendations(let recomendationsData):
+        case let .recomendations(recomendationsData):
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RecomendationsCell.self), for: indexPath) as! RecomendationsCell
             cell.configure(with: recomendationsData)
 
@@ -231,12 +224,9 @@ extension AllPlacesViewController: UITableViewDataSource {
     }
 
     @objc func tapToPlace(_ sender: UITapGestureRecognizer) {
-        
         if let view = sender.view as? PlaceCell {
-            
             UserDefaults.standard.setValue(view.placeId, forKey: "placeId")
             NotificationCenter.default.post(name: Notification.Name("findPlace"), object: nil)
-            
         }
     }
 }
@@ -255,14 +245,14 @@ extension AllPlacesViewController: UITableViewDelegate {
             }
         }
     }
-    
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-            let contentOffsetY = scrollView.contentOffset.y
-            //print(contentOffsetY)
-            if contentOffsetY > 300 {
-                turnOnUpButton()
-            } else if contentOffsetY < 300 {
-                turnOffUpButton()
-            }
+        let contentOffsetY = scrollView.contentOffset.y
+        // print(contentOffsetY)
+        if contentOffsetY > 300 {
+            turnOnUpButton()
+        } else if contentOffsetY < 300 {
+            turnOffUpButton()
+        }
     }
 }

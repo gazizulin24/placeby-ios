@@ -8,9 +8,9 @@
 import Foundation
 
 struct RecomendationsSingleData {
-    let title:String
-    let imageName:String
-    let placesType:String
+    let title: String
+    let imageName: String
+    let placesType: String
 }
 
 typealias RecomedationsData = [RecomendationsSingleData]

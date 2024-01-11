@@ -8,32 +8,30 @@
 import UIKit
 
 class GlobalSettingsViewController: UIViewController {
-    
-    
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         initialize()
     }
-    
+
     // MARK: - Private constants
-    
+
     private enum UIConstants {
-        static let feedbackBigLabelHeight:CGFloat = 30
-        static let feedbackSmallLabelHeight:CGFloat = 70
-        static let labelsTopOffset:CGFloat = 10
-        static let sublabelHeight:CGFloat = 20
-        static let segmentedControlHeight:CGFloat = 40
-        static let textFieldHeight:CGFloat = 50
+        static let feedbackBigLabelHeight: CGFloat = 30
+        static let feedbackSmallLabelHeight: CGFloat = 70
+        static let labelsTopOffset: CGFloat = 10
+        static let sublabelHeight: CGFloat = 20
+        static let segmentedControlHeight: CGFloat = 40
+        static let textFieldHeight: CGFloat = 50
         static let sendFeedbackButtonHeight: CGFloat = 50
     }
 
     // MARK: - Private properties
-    
-    private let settings:[SettingsCells] = [.nearbyRange]
-    
+
+    private let settings: [SettingsCells] = [.nearbyRange]
+
     private let titleLabelView: UILabel = {
         let label = UILabel()
 
@@ -45,8 +43,7 @@ class GlobalSettingsViewController: UIViewController {
         return label
 
     }()
-    
-    
+
     private lazy var tableView: GlobalSettingsTableView = {
         let tableView = GlobalSettingsTableView()
 
@@ -54,28 +51,24 @@ class GlobalSettingsViewController: UIViewController {
         tableView.delegate = self
         return tableView
     }()
-
-    
 }
+
 // MARK: - Private methods
+
 private extension GlobalSettingsViewController {
-    
     func initialize() {
         view.backgroundColor = .white
-        
+
         configNavigation()
-        
+
         view.addSubview(tableView)
-        
 
         tableView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(view.snp.topMargin)
         }
     }
-    
-    
-    
+
     func configNavigation() {
         navigationController?.isNavigationBarHidden = false
         navigationController?.navigationBar.isHidden = false
@@ -84,7 +77,7 @@ private extension GlobalSettingsViewController {
         navigationController?.navigationBar.barTintColor = .white
         navigationItem.titleView = titleLabelView
     }
-    
+
     func getLeftBarButtonItems() -> [UIBarButtonItem] {
         var items = [UIBarButtonItem]()
 
@@ -99,8 +92,6 @@ private extension GlobalSettingsViewController {
     }
 }
 
-
-
 // MARK: - UITableViewDataSource
 
 extension GlobalSettingsViewController: UITableViewDataSource {
@@ -111,15 +102,13 @@ extension GlobalSettingsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let index = indexPath.row
 
-        switch settings[index]{
+        switch settings[index] {
         case .nearbyRange:
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlacesNearbySettingsCell.self), for: indexPath) as! PlacesNearbySettingsCell
             return cell
         }
-        
-        }
     }
-
+}
 
 // MARK: - UITableViewDelegate
 
@@ -132,4 +121,3 @@ extension GlobalSettingsViewController: UITableViewDelegate {
         }
     }
 }
-

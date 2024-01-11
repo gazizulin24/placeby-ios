@@ -9,6 +9,6 @@ import Foundation
 
 // MARK: - GetFavouritePlacesResponseEntity
 
- struct GetFavouritePlacesResponseEntity: Codable {
+struct GetFavouritePlacesResponseEntity: Codable {
     let favPlaces: [GetAllPlacesRequestResponseSingleEntity]
 }
