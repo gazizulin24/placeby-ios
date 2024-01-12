@@ -198,6 +198,9 @@ private extension PlaceViewController {
             isLiked = false
         } else {
             FavouritePlacesNetworkManager.makePlaceFavouriteForPerson(placeId: place.id, personId: userId)
+            let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+            feedbackGenerator.prepare()
+            feedbackGenerator.impactOccurred()
             sender.image = ImageConstants.likedImage
             isLiked = true
 
