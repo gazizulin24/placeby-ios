@@ -206,7 +206,11 @@ private extension MainTabBarController {
         NotificationCenter.default.addObserver(self, selector: #selector(sentRating(_:)), name: Notification.Name("sendRatePlace"), object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(openAllPlaces), name: Notification.Name("openAllPlaces"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(sendReratePlace(_:)), name: Notification.Name("sendReratePlace"), object: nil)
     }
+    
+    
 
     @objc func ratePlace() {
         dimView.addGestureRecognizer(closeRateViewGestureRecognizer)
@@ -224,8 +228,26 @@ private extension MainTabBarController {
             self.dimView.alpha = 0.3
             self.ratingView.alpha = 1
         }
+        
+        ratingView.configure(placeId: UserDefaults.standard.integer(forKey: "placeId"))
     }
 
+    @objc func sendReratePlace(_ sender: Notification) {
+        let placeId = UserDefaults.standard.integer(forKey: "placeId")
+        if let rating = sender.object as? Int {
+            print("user rerated place \(placeId): ", rating)
+
+            PlacesNetworkManager.reratePlace(placeId: placeId, rating: rating)
+        }
+
+        closeRateView()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            if let nc = self.viewControllers?.first as? UINavigationController, let vc = nc.viewControllers.last! as? PlaceViewController {
+                vc.configureWithId(placeId)
+            }
+        }
+    }
+    
     @objc func sentRating(_ sender: Notification) {
         let placeId = UserDefaults.standard.integer(forKey: "placeId")
         if let rating = sender.object as? Int {

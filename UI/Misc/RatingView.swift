@@ -13,6 +13,31 @@ final class RatingView: UIView {
 
     func configure(placeId: Int) {
         self.placeId = placeId
+        prevRating = -1
+        
+        placeNameLabel.alpha = 0
+        starsView.alpha = 0
+        closeButton.isUserInteractionEnabled = false
+        
+        PlacesNetworkManager.getIsUserRatedPlace(placeId: placeId) { responseEntity in
+            if let rating = responseEntity?.assignedRating {
+                
+                UIView.animate(withDuration: 0.2) {
+                    self.placeNameLabel.alpha = 1
+                    self.starsView.alpha = 1
+                    self.closeButton.isUserInteractionEnabled = true
+                }
+                if rating == -1 {
+                    self.fillStars(count: 0)
+                } else {
+                    self.fillStars(count: Int(rating))
+                }
+                
+                self.prevRating = Int(rating)
+            } else{
+                print("error getIsUserRatedPlace")
+            }
+        }
     }
 
     // MARK: - Init
@@ -41,6 +66,7 @@ final class RatingView: UIView {
 
     private var placeId = 0
     private var placeRating = 0
+    private var prevRating = -1
 
     private lazy var closeButton: UIButton = {
         let button = UIButton(configuration: .tinted())
@@ -149,11 +175,26 @@ private extension RatingView {
 
     @objc func ratePlace() {
         if placeRating != 0 {
-            NotificationCenter.default.post(name: Notification.Name("sendRatePlace"), object: placeRating)
+            
+            if prevRating == -1 {
+                NotificationCenter.default.post(name: Notification.Name("sendRatePlace"), object: placeRating)
+            } else {
+                NotificationCenter.default.post(name: Notification.Name("sendReratePlace"), object: placeRating)
+            }
+            
         }
-
+        
         for star in starButtons {
             star.image = UIImage(systemName: "star")?.withTintColor(.gray, renderingMode: .alwaysOriginal)
+        }
+    }
+    
+    func fillStars(count: Int){
+        for (i, star) in starButtons.enumerated() {
+            if i == count {
+                break
+            }
+            star.image = UIImage(systemName: "star.fill")?.withTintColor(UIColor(cgColor: CGColor(red: 251 / 255, green: 211 / 255, blue: 59 / 255, alpha: 1)), renderingMode: .alwaysOriginal)
         }
     }
 }

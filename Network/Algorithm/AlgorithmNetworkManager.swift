@@ -18,6 +18,10 @@ enum AlgorithmNetworkManager {
         let countOfPeople = UserDefaults.standard.integer(forKey: "countOfPeople")
         let isActiveRelax = UserDefaults.standard.bool(forKey: "isActiveRelax")
         let isNearbyOrNo = UserDefaults.standard.bool(forKey: "isNearbyOrNo")
+        let latPerson = UserDefaults.standard.double(forKey: "userLatitude")
+        let lonPerson = UserDefaults.standard.double(forKey: "userLongitude")
+        let isFamily = UserDefaults.standard.double(forKey: "isFamily")
+        let nearbyRadius = isNearbyOrNo ? UserDefaults.standard.integer(forKey: "placesNearbyRange") : 1000
         
         let parametrs: Parameters = [
             "countOfPeople": countOfPeople,
@@ -25,6 +29,11 @@ enum AlgorithmNetworkManager {
             "age": userAge,
             "gender": userGender,
             "activeRelax": isActiveRelax,
+            "latPerson": latPerson,
+            "lonPerson": lonPerson,
+            "nearby": nearbyRadius,
+            "family": isFamily
+            
         ]
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",

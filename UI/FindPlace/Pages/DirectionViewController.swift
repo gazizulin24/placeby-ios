@@ -37,7 +37,7 @@ final class DirectionViewController: UIViewController {
     private let helloLabel: UILabel = {
         let label = UILabel()
 
-        label.text = "Место для прогулки выбирать в шаговой доступности (<1.5км)?"
+        label.text = "Место для прогулки выбирать в рядом? (в радиусе \(UserDefaults.standard.integer(forKey: "placesNearbyRange")) км)"
         label.numberOfLines = 2
         label.font = .systemFont(ofSize: UIConstants.helloLabelFontSize, weight: .bold)
         label.textColor = .white

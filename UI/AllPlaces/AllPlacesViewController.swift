@@ -146,8 +146,11 @@ private extension AllPlacesViewController {
         if filter == "all" {
             PlacesNetworkManager.getAllPlacesRequest { [self] responseEntity in
                 data.removeLast()
-                if let responseEntity = responseEntity {
-                    for placeResponse in responseEntity {
+                data.removeLast()
+                
+                if let places = responseEntity {
+                    data.append(.title("\(PlaceType.getPlaceTypeFromUserDefaults()!.title) (\(places.count))"))
+                    for placeResponse in places {
                         data.append(.place(placeResponse))
                     }
 
@@ -162,7 +165,9 @@ private extension AllPlacesViewController {
         } else {
             PlacesNetworkManager.getAllPlacesByTypeRequest(filter) { [self] responseEntity in
                 data.removeLast()
+                data.removeLast()
                 if let responseEntity = responseEntity {
+                    data.append(.title("\(PlaceType.getPlaceTypeFromUserDefaults()!.title) (\(responseEntity.count))"))
                     for placeResponse in responseEntity {
                         data.append(.place(placeResponse))
                     }
