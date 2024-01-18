@@ -22,6 +22,8 @@ final class CountOfPeopleViewController: UIViewController {
     private enum UIConstants {
         static let smileLabelFontSize: CGFloat = 70
         static let helloLabelFontSize: CGFloat = 20
+        static let buttonHeight:CGFloat = 50
+        static let buttonWidth:CGFloat = 200
     }
 
     // MARK: - Private properties
@@ -102,8 +104,8 @@ private extension CountOfPeopleViewController {
         companyButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(50)
-            make.width.equalTo(200)
-            make.height.equalTo(70)
+            make.width.equalTo(UIConstants.buttonWidth)
+            make.height.equalTo(UIConstants.buttonHeight)
         }
 
         view.addSubview(pairButton)
@@ -111,16 +113,16 @@ private extension CountOfPeopleViewController {
         pairButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(companyButton.snp.top).inset(-20)
-            make.width.equalTo(200)
-            make.height.equalTo(70)
+            make.width.equalTo(UIConstants.buttonWidth)
+            make.height.equalTo(UIConstants.buttonHeight)
         }
         view.addSubview(singleButton)
 
         singleButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(pairButton.snp.top).inset(-20)
-            make.width.equalTo(200)
-            make.height.equalTo(70)
+            make.width.equalTo(UIConstants.buttonWidth)
+            make.height.equalTo(UIConstants.buttonHeight)
         }
     }
     

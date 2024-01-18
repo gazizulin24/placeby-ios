@@ -45,7 +45,9 @@ final class FindPlacePageViewController: UIPageViewController {
     // MARK: - Private constants
 
     private let pages: [UIViewController] = [FindPlaceHelloViewController(),
+                                             IsFamilyViewController(),
                                              CountOfPeopleViewController(),
+                                             IsEntertainmentViewController(),
                                              DirectionViewController(),
                                              LoadingViewController()]
 
